@@ -46,7 +46,6 @@
         }
     </script>
     <style>
-        /* Gradiente animado dinámico para el fondo */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -57,25 +56,278 @@
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
         }
-        
         .glow-verde { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); }
         .glow-celeste { box-shadow: 0 0 15px rgba(6, 182, 212, 0.25); }
-        
         .glass-panel {
             background: rgba(18, 18, 24, 0.65);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(63, 63, 70, 0.4);
         }
-
-        /* Estilo para las imágenes integradas */
         .img-overlay {
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
         }
+
+        /* LOADING SCREEN */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #09090b;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loader-droplet {
+            width: 48px;
+            height: 48px;
+            border-radius: 0 50% 50% 50%;
+            background: linear-gradient(135deg, #22c55e, #06b6d4);
+            transform: rotate(45deg);
+            animation: dropletPulse 1.5s ease-in-out infinite;
+        }
+        @keyframes dropletPulse {
+            0%, 100% { transform: rotate(45deg) scale(0.8); opacity: 0.6; box-shadow: 0 0 0 0 rgba(6,182,212,0.3); }
+            50% { transform: rotate(45deg) scale(1.1); opacity: 1; box-shadow: 0 0 40px 10px rgba(6,182,212,0.15); }
+        }
+        .loader-bar-track {
+            width: 200px;
+            height: 3px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+        .loader-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #22c55e, #06b6d4);
+            border-radius: 4px;
+            animation: loaderFill 2s ease-in-out forwards;
+        }
+        @keyframes loaderFill {
+            0% { width: 0%; }
+            70% { width: 75%; }
+            100% { width: 100%; }
+        }
+
+        /* SCROLL PROGRESS BAR */
+        #scrollProgress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #22c55e, #06b6d4);
+            z-index: 9998;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* SCROLL REVEAL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* BACK TO TOP */
+        #backToTop {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9997;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #22d3ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px) scale(0.9);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(12px);
+        }
+        #backToTop.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        #backToTop:hover {
+            background: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 24px rgba(6, 182, 212, 0.2);
+        }
+
+        /* MOBILE MENU */
+        #mobileMenu {
+            position: fixed;
+            inset: 0;
+            z-index: 9996;
+            background: rgba(9, 9, 11, 0.92);
+            backdrop-filter: blur(24px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #mobileMenu.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        #mobileMenu a {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #d4d4d8;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        #mobileMenu a::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            left: 28px;
+            right: 28px;
+            height: 2px;
+            background: linear-gradient(90deg, #22c55e, #06b6d4);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        #mobileMenu a:hover::after,
+        #mobileMenu a.active::after {
+            transform: scaleX(1);
+        }
+        #mobileMenu a:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.04);
+        }
+        #menuToggle {
+            cursor: pointer;
+            width: 32px;
+            height: 24px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 9997;
+        }
+        #menuToggle span {
+            display: block;
+            width: 100%;
+            height: 2.5px;
+            background: #d4d4d8;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        #menuToggle.open span:nth-child(1) {
+            transform: translateY(10.5px) rotate(45deg);
+        }
+        #menuToggle.open span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        #menuToggle.open span:nth-child(3) {
+            transform: translateY(-10.5px) rotate(-45deg);
+        }
+
+        /* NAV ACTIVE DOT */
+        .nav-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #22c55e;
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .nav-link.active .nav-dot {
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* COUNTER ANIMATION */
+        .count-up {
+            display: inline-block;
+        }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+        /* TANK GLOW */
+        .tank-glow {
+            box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+
+        /* FORM STYLES */
+        .form-input {
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2), 0 0 20px rgba(6, 182, 212, 0.05);
+        }
+
+        @media (max-width: 480px) {
+            .loader-bar-track { width: 160px; }
+        }
     </style>
 </head>
 <body class="animated-bg text-zinc-100 font-sans min-h-screen selection:bg-celeste-500 selection:text-zinc-950 relative">
+
+    <!-- LOADING SCREEN -->
+    <div id="loader">
+        <div class="loader-droplet"></div>
+        <div class="loader-bar-track">
+            <div class="loader-bar-fill"></div>
+        </div>
+        <p class="text-xs text-zinc-500 font-mono mt-4 tracking-wider">INICIALIZANDO SISTEMA HÍDRICO</p>
+    </div>
+
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scrollProgress"></div>
+
+    <!-- BACK TO TOP -->
+    <button id="backToTop" aria-label="Volver arriba">
+        <i class="fa-solid fa-arrow-up text-sm"></i>
+    </button>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div id="mobileMenu">
+        <a href="#introduccion" class="active" data-nav>Contexto</a>
+        <a href="#modelo-matematico" data-nav>Desarrollo Matemático</a>
+        <a href="#simulador" data-nav>Simulador</a>
+        <a href="#hardware" data-nav>Hardware IoT</a>
+        <a href="#faq" data-nav>FAQ</a>
+        <a href="#contacto" data-nav>Contacto</a>
+        <span class="mt-4 text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-4 py-1.5 rounded-full font-mono">UTP - 2026</span>
+    </div>
 
     <!-- Canvas para el fondo interactivo (Partículas de agua) -->
     <canvas id="particleCanvas" class="fixed inset-0 z-0 pointer-events-none opacity-60"></canvas>
@@ -96,68 +348,98 @@
                     <p class="text-[10px] sm:text-xs text-zinc-400 font-medium">Facultad de Ingeniería • Proyecto Hidrológico</p>
                 </div>
             </div>
-            
-            <!-- Links de Navegación del Paper -->
-            <div class="hidden lg:flex items-center space-x-6">
-                <a href="#introduccion" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Contexto</a>
-                <a href="#modelo-matematico" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Desarrollo Matemático</a>
-                <a href="#simulador" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Simulador</a>
-                <a href="#hardware" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Hardware IoT</a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden lg:flex items-center space-x-8">
+                <a href="#introduccion" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                    Contexto
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#modelo-matematico" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                    Desarrollo Matemático
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#simulador" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                    Simulador
+                    <span class="nav-dot"></span>
+                </a>
+                <a href="#hardware" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                    Hardware IoT
+                    <span class="nav-dot"></span>
+                </a>
                 <span class="h-4 w-px bg-zinc-700"></span>
-                <span class="text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full font-mono">
+                <span class="text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full font-mono whitespace-nowrap">
                     UTP - 2026
                 </span>
+            </nav>
+
+            <!-- Mobile Hamburger -->
+            <div id="menuToggle" class="lg:hidden flex flex-col justify-center">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </header>
 
     <!-- Héroe / Cabecera de Proyecto Universitario -->
     <section class="relative overflow-hidden border-b border-zinc-900/50 py-20 lg:py-32 z-10">
-        <!-- Imagen de fondo del hero (Naturaleza/Agua) -->
         <div class="absolute inset-0 z-[-1] opacity-20 img-overlay">
             <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920" alt="" class="w-full h-full object-cover">
         </div>
-        
+
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative space-y-8">
-            <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
+            <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm reveal">
                 <i class="fa-solid fa-graduation-cap"></i>
                 <span>Universidad Continental • Escuela Académico Profesional de Ingeniería</span>
             </div>
 
             <div class="space-y-4 max-w-5xl">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight drop-shadow-lg">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight drop-shadow-lg reveal">
                     Optimización de la Recarga de Acuíferos mediante Captación Atmosférica usando Cálculo Diferencial
                 </h1>
-                <p class="text-sm sm:text-base text-zinc-300 font-semibold uppercase tracking-widest bg-zinc-950/50 inline-block px-2 py-1 rounded backdrop-blur-sm">
+                <p class="text-sm sm:text-base text-zinc-300 font-semibold uppercase tracking-widest bg-zinc-950/50 inline-block px-2 py-1 rounded backdrop-blur-sm reveal">
                     Modelado, Simulación en Tiempo Real e Instrumentación IoT con Microcontrolador ESP32
                 </p>
             </div>
 
+            <!-- Botones de acción -->
+            <div class="flex flex-wrap gap-3 reveal">
+                <a href="#simulador" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-verde-600 to-celeste-600 hover:from-verde-500 hover:to-celeste-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all duration-200 shadow-lg shadow-celeste-500/20">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Explorar Simulador</span>
+                </a>
+                <a href="#hardware" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-zinc-800/60 hover:bg-zinc-700/60 border border-zinc-700/60 text-zinc-200 font-bold rounded-xl text-xs uppercase tracking-wider transition-all duration-200">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>Ver Hardware</span>
+                </a>
+            </div>
+
             <!-- Integrantes & Roles -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4">
-                    <div class="w-10 h-10 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center font-bold text-sm">JS</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 reveal">
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-celeste-500/30 transition-all duration-300">
+                    <div class="w-10 h-10 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform">JS</div>
                     <div>
                         <h4 class="text-sm font-bold text-white">Juan Gustavo Segura Villegas</h4>
                         <p class="text-xs text-zinc-400">Firmware ESP32 & IoT Integración</p>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4">
-                    <div class="w-10 h-10 rounded-xl bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center font-bold text-sm">CC</div>
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-verde-500/30 transition-all duration-300">
+                    <div class="w-10 h-10 rounded-xl bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform">CC</div>
                     <div>
                         <h4 class="text-sm font-bold text-white">Ccanqqueri Saraya Paul Eduardo</h4>
                         <p class="text-xs text-zinc-400">Modelación Matemática & Hidrología</p>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 justify-between">
+                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between group">
                     <div>
                         <h4 class="text-xs uppercase tracking-wider text-zinc-400 font-bold">Proyecto Integrador</h4>
                         <p class="text-xs font-bold text-white">Cálculo Diferencial aplicado a Ingeniería</p>
                         <p class="text-[10px] text-zinc-400">Sede Central • Sometido para Evaluación</p>
                     </div>
-                    <i class="fa-solid fa-microchip text-2xl text-verde-500/30"></i>
+                    <i class="fa-solid fa-microchip text-2xl text-verde-500/30 group-hover:text-verde-400 transition-colors"></i>
                 </div>
             </div>
         </div>
@@ -167,7 +449,7 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 relative z-10">
 
         <!-- INTRODUCCIÓN Y PROBLEMÁTICA CON IMÁGENES -->
-        <section id="introduccion" class="space-y-8">
+        <section id="introduccion" class="space-y-8 reveal">
             <div class="space-y-4 max-w-4xl">
                 <h3 class="text-2xl font-bold text-white flex items-center space-x-3">
                     <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold">1</span>
@@ -179,14 +461,13 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Tarjeta 1: Glaciares -->
-                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group">
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group hover:border-red-500/30 transition-all duration-500 reveal">
                     <div class="h-40 overflow-hidden relative">
                         <img src="https://images.unsplash.com/photo-1548671846-9d5c4125b2a4?auto=format&fit=crop&q=80&w=600" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent"></div>
                     </div>
                     <div class="p-6 -mt-8 relative z-10 space-y-2">
-                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-red-500/30 flex items-center justify-center text-red-400 text-lg mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-red-500/30 flex items-center justify-center text-red-400 text-lg mb-3 group-hover:bg-red-500/10 transition-colors">
                             <i class="fa-solid fa-mountain"></i>
                         </div>
                         <h4 class="text-base font-bold text-white">Retracción Glaciar</h4>
@@ -196,14 +477,13 @@
                     </div>
                 </div>
 
-                <!-- Tarjeta 2: Demanda Urbana -->
-                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group">
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group hover:border-amber-500/30 transition-all duration-500 reveal">
                     <div class="h-40 overflow-hidden relative">
                         <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=600" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent"></div>
                     </div>
                     <div class="p-6 -mt-8 relative z-10 space-y-2">
-                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg mb-3 group-hover:bg-amber-500/10 transition-colors">
                             <i class="fa-solid fa-city"></i>
                         </div>
                         <h4 class="text-base font-bold text-white">Impermeabilización Urbana</h4>
@@ -213,14 +493,13 @@
                     </div>
                 </div>
 
-                <!-- Tarjeta 3: Sequía -->
-                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group">
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group hover:border-verde-500/30 transition-all duration-500 reveal">
                     <div class="h-40 overflow-hidden relative">
                         <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=600" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent"></div>
                     </div>
                     <div class="p-6 -mt-8 relative z-10 space-y-2">
-                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-verde-500/30 flex items-center justify-center text-verde-400 text-lg mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-verde-500/30 flex items-center justify-center text-verde-400 text-lg mb-3 group-hover:bg-verde-500/10 transition-colors">
                             <i class="fa-solid fa-droplet-slash"></i>
                         </div>
                         <h4 class="text-base font-bold text-white">Estrés Hídrico</h4>
@@ -233,9 +512,9 @@
         </section>
 
         <!-- DESARROLLO DEL PROYECTO: FORMULACIÓN MATEMÁTICA -->
-        <section id="modelo-matematico" class="glass-panel rounded-3xl p-8 space-y-8 relative overflow-hidden">
+        <section id="modelo-matematico" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 relative overflow-hidden reveal">
             <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-verde-500/10 rounded-full blur-[80px] pointer-events-none"></div>
-            
+
             <div class="max-w-3xl">
                 <h3 class="text-2xl font-extrabold text-white flex items-center space-x-3">
                     <span class="w-8 h-8 rounded-lg bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center text-sm font-bold">2</span>
@@ -246,10 +525,8 @@
                 </p>
             </div>
 
-            <!-- Ecuaciones e Integrales -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Modelo base hídrico -->
-                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4">
+                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4 hover:border-verde-500/20 transition-colors">
                     <h4 class="text-sm font-bold text-zinc-100 uppercase tracking-wider border-b border-zinc-800 pb-2">
                         A. Definición del Balance Dinámico (\(I(t) = 0\))
                     </h4>
@@ -267,8 +544,7 @@
                     </p>
                 </div>
 
-                <!-- Optimización mediante primera derivada -->
-                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4">
+                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4 hover:border-celeste-500/20 transition-colors">
                     <h4 class="text-sm font-bold text-zinc-100 uppercase tracking-wider border-b border-zinc-800 pb-2">
                         B. Búsqueda de Punto de Inflexión y Optimización
                     </h4>
@@ -281,23 +557,22 @@
                         $$V(5) = -0.30(5)^2 + 3(5) + 50 = 57.5\text{ MMC}$$
                     </p>
                     <p class="text-xs text-zinc-300 leading-relaxed text-justify">
-                        Al resolver la raíz real para la condición de colapso extremo ($V(t) = 0$), se establece que a los <strong>18.84 años</strong> las reservas del acuífero quedarán totalmente extintas si no se aplica la inyección de recarga: $I(t) = 0.60t - 3$. De aplicarse, se logra la condición ideal $\frac{dV}{dt} = 0$.
+                        Al resolver la raíz real para la condición de colapso extremo ($V(t) = 0$), se establece que a los <strong class="text-red-400">18.84 años</strong> las reservas del acuífero quedarán totalmente extintas si no se aplica la inyección de recarga: $I(t) = 0.60t - 3$. De aplicarse, se logra la condición ideal $\frac{dV}{dt} = 0$.
                     </p>
                 </div>
             </div>
 
-            <!-- Esquema Gráfico del Modelo Hídrico -->
             <div class="p-4 rounded-2xl border border-zinc-800 bg-zinc-950/80 mt-4 shadow-inner">
                 <p class="text-xs font-bold text-celeste-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-compass-drafting mr-2"></i>Figura 1: Esquema Vectorial de Modelación Matemática</p>
-                
+
                 <svg viewBox="0 0 800 220" class="w-full h-auto bg-zinc-900/30 rounded-xl p-2 border border-zinc-800/50">
                     <line x1="100" y1="20" x2="100" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" />
                     <line x1="400" y1="20" x2="400" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" />
                     <line x1="700" y1="20" x2="700" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" stroke-width="2" />
-                    
+
                     <path d="M 50,50 L 250,50" fill="none" stroke="#22c55e" stroke-width="3" marker-end="url(#arrow-green)" />
                     <text x="70" y="40" fill="#4ade80" font-family="monospace" font-size="12" font-weight="bold">Recarga Natural R = 3 MMC/año</text>
-                    
+
                     <path d="M 400,160 L 600,160" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)" />
                     <text x="410" y="150" fill="#f87171" font-family="monospace" font-size="12" font-weight="bold">Consumo Creciente C(t) = 0.60·t</text>
 
@@ -313,7 +588,7 @@
                     <rect x="630" y="70" width="150" height="80" rx="6" fill="#052e16" stroke="#22c55e" stroke-width="1.5" />
                     <text x="705" y="95" fill="#a7f3d0" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">ESTADO ESTABLE</text>
                     <text x="705" y="125" fill="#4ade80" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">dV/dt = 0</text>
-                    
+
                     <defs>
                         <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e" />
@@ -330,7 +605,7 @@
         </section>
 
         <!-- SECCIÓN DE RESULTADOS: SIMULADOR MATEMÁTICO INTERACTIVO -->
-        <section id="simulador" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section id="simulador" class="grid grid-cols-1 lg:grid-cols-3 gap-8 reveal">
             <div class="glass-panel rounded-3xl p-6 space-y-6 flex flex-col justify-between">
                 <div>
                     <h4 class="text-lg font-bold text-white mb-1 flex items-center space-x-2">
@@ -341,13 +616,12 @@
                 </div>
 
                 <div class="space-y-4 flex-grow my-4">
-                    <!-- Sliders -->
                     <div class="space-y-1">
                         <div class="flex justify-between text-xs">
                             <span class="text-zinc-300">Volumen Inicial \(V_0\)</span>
                             <span id="v0Val" class="font-bold text-celeste-400 font-mono">50 MMC</span>
                         </div>
-                        <input type="range" id="v0Slider" min="20" max="100" value="50" step="5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        <input type="range" id="v0Slider" min="20" max="100" value="50" step="5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="space-y-1">
@@ -355,7 +629,7 @@
                             <span class="text-zinc-300">Recarga Natural \(R\)</span>
                             <span id="rVal" class="font-bold text-celeste-400 font-mono">3.0 MMC/año</span>
                         </div>
-                        <input type="range" id="rSlider" min="0" max="10" value="3" step="0.5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        <input type="range" id="rSlider" min="0" max="10" value="3" step="0.5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="space-y-1">
@@ -363,7 +637,7 @@
                             <span class="text-zinc-300">Factor de Consumo \(c\)</span>
                             <span id="cVal" class="font-bold text-celeste-400 font-mono">0.60</span>
                         </div>
-                        <input type="range" id="cSlider" min="0.1" max="1.5" value="0.6" step="0.05" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        <input type="range" id="cSlider" min="0.1" max="1.5" value="0.6" step="0.05" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="space-y-1">
@@ -371,7 +645,7 @@
                             <span class="text-zinc-300">Crecimiento Demográfico (\(k_2\))</span>
                             <span id="k2Val" class="font-bold text-celeste-400 font-mono">0.05</span>
                         </div>
-                        <input type="range" id="k2Slider" min="0" max="0.3" value="0.05" step="0.01" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        <input type="range" id="k2Slider" min="0" max="0.3" value="0.05" step="0.01" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800/80 flex items-center justify-between">
@@ -392,7 +666,6 @@
                 </div>
             </div>
 
-            <!-- Gráfico Interactivo de Resultados -->
             <div class="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col justify-between space-y-4">
                 <div class="flex items-center justify-between">
                     <h4 class="text-sm font-bold text-white flex items-center space-x-2">
@@ -402,20 +675,20 @@
                     <span class="text-xs text-zinc-400 font-mono">Proyección Temporal (Años)</span>
                 </div>
 
-                <div class="relative h-80 sm:h-96">
+                <div class="relative h-72 sm:h-80 lg:h-96">
                     <canvas id="simulationChart"></canvas>
                 </div>
 
-                <div class="grid grid-cols-3 gap-4 text-center">
-                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800">
+                <div class="grid grid-cols-3 gap-3 sm:gap-4 text-center">
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 hover:border-celeste-500/30 transition-colors">
                         <p class="text-[9px] text-zinc-400">Máximo Natural</p>
                         <p id="vMaxText" class="text-xs font-bold text-celeste-400 font-mono">57.50 MMC</p>
                     </div>
-                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800">
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 hover:border-verde-500/30 transition-colors">
                         <p class="text-[9px] text-zinc-400">Año Pico</p>
                         <p id="tMaxText" class="text-xs font-bold text-verde-400 font-mono">Año 5.0</p>
                     </div>
-                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800">
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 transition-colors" id="stabilityCard">
                         <p class="text-[9px] text-zinc-400">Estado Dinámico</p>
                         <p id="stabilityStatus" class="text-xs font-bold text-emerald-400 font-mono">Estable</p>
                     </div>
@@ -424,7 +697,7 @@
         </section>
 
         <!-- SECCIÓN DE HARDWARE & TELEMETRÍA IOT CON IMAGEN -->
-        <section id="hardware" class="glass-panel rounded-3xl p-8 space-y-8">
+        <section id="hardware" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 reveal">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-xl font-bold">3</div>
@@ -439,20 +712,26 @@
                 </div>
             </div>
 
-            <!-- Imagen del Hardware -->
-            <div class="w-full h-48 sm:h-64 rounded-2xl overflow-hidden relative border border-zinc-800/80">
-                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200" alt="" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-zinc-950/40"></div>
+            <div class="w-full h-48 sm:h-60 lg:h-64 rounded-2xl overflow-hidden relative border border-zinc-800/80 group">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                <div class="absolute inset-0 bg-gradient-to-r from-zinc-950/60 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent"></div>
                 <div class="absolute bottom-4 left-4">
-                    <span class="bg-zinc-950/80 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded text-xs font-mono font-bold backdrop-blur">
-                        <i class="fa-solid fa-microchip mr-1"></i> Microcontrolador ESP32-WROOM-32
+                    <span class="bg-zinc-950/80 text-celeste-300 border border-celeste-500/30 px-3 py-1.5 rounded text-xs font-mono font-bold backdrop-blur-sm inline-flex items-center space-x-1.5">
+                        <i class="fa-solid fa-microchip"></i>
+                        <span>Microcontrolador ESP32-WROOM-32</span>
+                    </span>
+                </div>
+                <div class="absolute top-4 right-4 flex gap-2">
+                    <span class="bg-zinc-950/70 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded text-[10px] font-mono font-bold backdrop-blur-sm inline-flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span>ACTIVO</span>
                     </span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Parámetros Ambientales (DHT22) -->
-                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 space-y-6 hover:border-celeste-500/20 transition-colors">
                     <div>
                         <h4 class="text-sm font-bold text-white flex items-center space-x-2">
                             <i class="fa-solid fa-cloud-rain text-celeste-400"></i>
@@ -466,7 +745,7 @@
                                 <span class="text-zinc-300">Humedad Relativa (%)</span>
                                 <span id="humDHTVal" class="font-bold text-celeste-400 font-mono">75%</span>
                             </div>
-                            <input type="range" id="humDHTSlider" min="30" max="100" value="75" step="1" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                            <input type="range" id="humDHTSlider" min="30" max="100" value="75" step="1" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30">
                         </div>
 
                         <div class="space-y-2">
@@ -474,20 +753,22 @@
                                 <span class="text-zinc-300">Temperatura Ambiente (°C)</span>
                                 <span id="tempDHTVal" class="font-bold text-verde-400 font-mono">25°C</span>
                             </div>
-                            <input type="range" id="tempDHTSlider" min="10" max="45" value="25" step="1" class="w-full accent-verde-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                            <input type="range" id="tempDHTSlider" min="10" max="45" value="25" step="1" class="w-full accent-verde-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-verde-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-verde-500/30">
                         </div>
                     </div>
 
                     <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/60 space-y-2.5 text-xs">
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="text-zinc-400">Generación Condensador:</span>
-                            <span id="condensationRate" class="font-bold text-celeste-400 font-mono">0.45 L/min</span>
+                            <span id="condensationRate" class="font-bold text-celeste-400 font-mono text-sm">0.45 L/min</span>
+                        </div>
+                        <div class="w-full bg-zinc-800 rounded-full h-1.5">
+                            <div id="condBar" class="bg-gradient-to-r from-celeste-600 to-celeste-400 h-1.5 rounded-full transition-all duration-300" style="width: 45%"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Actuadores (HC-SR04) -->
-                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 flex flex-col justify-between space-y-6">
+                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 flex flex-col justify-between space-y-6 hover:border-verde-500/20 transition-colors">
                     <div>
                         <h4 class="text-sm font-bold text-white flex items-center space-x-2">
                             <i class="fa-solid fa-gauge text-verde-400"></i>
@@ -495,64 +776,68 @@
                         </h4>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 flex flex-col items-center justify-center space-y-2 relative overflow-hidden">
+                    <div class="flex items-center gap-6 justify-center">
+                        <div class="flex flex-col items-center space-y-2">
                             <span class="text-[9px] text-zinc-500 uppercase font-bold text-center">Nivel del Tanque</span>
-                            <div class="w-14 h-24 border border-zinc-800 rounded-lg relative overflow-hidden bg-zinc-900 flex flex-col justify-end">
-                                <div id="tankLiquid" class="bg-gradient-to-t from-celeste-600 to-celeste-400 w-full transition-all duration-300" style="height: 45%;"></div>
-                                <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white font-mono" id="tankLevelPctText">45%</div>
+                            <div class="w-16 h-28 border border-zinc-800 rounded-lg relative overflow-hidden bg-zinc-900 flex flex-col justify-end tank-glow">
+                                <div id="tankLiquid" class="bg-gradient-to-t from-celeste-600/80 to-celeste-400/60 w-full transition-all duration-500 ease-out" style="height: 45%;"></div>
+                                <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white font-mono" id="tankLevelPctText">45%</div>
                             </div>
                         </div>
 
-                        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 flex flex-col items-center justify-center space-y-3">
-                            <span class="text-[9px] text-zinc-500 uppercase font-bold text-center">Actuador</span>
-                            <div id="pumpIconContainer" class="w-14 h-14 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-lg transition-all">
+                        <div class="flex flex-col items-center space-y-3">
+                            <span class="text-[9px] text-zinc-500 uppercase font-bold text-center">Bomba</span>
+                            <div id="pumpIconContainer" class="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xl transition-all duration-300">
                                 <i id="pumpIcon" class="fa-solid fa-rotate text-zinc-600"></i>
                             </div>
-                            <div class="text-center space-y-1">
-                                <span id="pumpStatusBadge" class="text-[10px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800">STANDBY</span>
-                            </div>
+                            <span id="pumpStatusBadge" class="text-[10px] px-2.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 font-bold">STANDBY</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800/60 text-xs space-y-1">
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Vol. Reinyectado:</span>
+                            <span id="rechargedVolText" class="font-bold text-verde-400 font-mono">0.0 Litros</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Monitor Serial -->
-                <div class="p-6 rounded-2xl bg-zinc-950 border border-zinc-900 flex flex-col justify-between h-80 lg:h-auto">
+                <div class="p-4 sm:p-6 rounded-2xl bg-zinc-950 border border-zinc-900 flex flex-col justify-between h-80 lg:h-auto">
                     <div class="flex justify-between items-center pb-2 border-b border-zinc-900">
                         <div class="flex items-center space-x-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-verde-500"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-verde-500 animate-pulse"></span>
                             <span class="text-[10px] font-bold font-mono text-zinc-400">Terminal ESP32</span>
                         </div>
-                        <span class="text-[9px] font-mono text-zinc-600">115200 baud</span>
+                        <div class="flex items-center gap-2">
+                            <span id="serialTimer" class="text-[9px] font-mono text-zinc-600">00:00</span>
+                            <span class="text-[9px] font-mono text-zinc-600">115200 baud</span>
+                        </div>
                     </div>
 
-                    <div id="terminalLog" class="flex-grow my-3 p-3 bg-zinc-900/80 rounded-xl border border-zinc-800/50 overflow-y-auto text-[10px] font-mono text-emerald-400 space-y-1">
-                        <!-- Logs dinámicos -->
+                    <div id="terminalLog" class="flex-grow my-3 p-3 bg-zinc-900/80 rounded-xl border border-zinc-800/50 overflow-y-auto text-[10px] font-mono text-emerald-400 space-y-1 scroll-smooth">
                     </div>
 
                     <div class="flex gap-2">
-                        <button id="btnAutoInject" class="flex-grow py-2 px-3 rounded-lg bg-celeste-600 hover:bg-celeste-500 text-zinc-950 font-bold text-xs transition duration-150">
-                            Fuerzo Manual
+                        <button id="btnAutoInject" class="flex-grow py-2 px-3 rounded-lg bg-gradient-to-r from-celeste-600 to-celeste-500 hover:from-celeste-500 hover:to-celeste-400 text-zinc-950 font-bold text-xs transition-all duration-200 active:scale-95">
+                            <i class="fa-solid fa-syringe mr-1.5"></i>Forzar Inyección
                         </button>
-                        <button id="btnClearLogs" class="py-2 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 transition">
+                        <button id="btnClearLogs" class="py-2 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 transition hover:text-zinc-200">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <!-- Código C++ Ocultable -->
-            <details class="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl cursor-pointer group">
+
+            <details class="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl cursor-pointer group transition-all duration-300 open:border-verde-500/30">
                 <summary class="p-4 text-sm font-bold text-white flex items-center justify-between outline-none">
                     <div class="flex items-center space-x-2">
                         <i class="fa-solid fa-code text-verde-400"></i>
                         <span>Ver Código C++ del Firmware ESP32</span>
                     </div>
-                    <i class="fa-solid fa-chevron-down text-zinc-500 group-open:rotate-180 transition-transform"></i>
+                    <i class="fa-solid fa-chevron-down text-zinc-500 group-open:rotate-180 transition-transform duration-300"></i>
                 </summary>
-                <div class="p-6 pt-0 border-t border-zinc-800/50 mt-2">
-                    <pre class="bg-zinc-950 border border-zinc-800/80 rounded-xl p-4 text-xs text-zinc-300 font-mono overflow-x-auto">
-<code>#include &lt;DHT.h&gt;
+                <div class="p-4 sm:p-6 pt-0 border-t border-zinc-800/50 mt-2">
+                    <pre class="bg-zinc-950 border border-zinc-800/80 rounded-xl p-4 text-xs text-zinc-300 font-mono overflow-x-auto leading-relaxed"><code>#include &lt;DHT.h&gt;
 
 #define DHTPIN 4
 #define DHTTYPE DHT22
@@ -568,7 +853,7 @@ void setup() {
   pinMode(PIN_TRIG, OUTPUT);
   pinMode(PIN_ECHO, INPUT);
   pinMode(PIN_BOMBA, OUTPUT);
-  digitalWrite(PIN_BOMBA, LOW); // Bomba inicialmente apagada
+  digitalWrite(PIN_BOMBA, LOW);
   Serial.println("--- SISTEMA HÍDRICO INICIALIZADO ---");
 }
 
@@ -576,14 +861,12 @@ void loop() {
   float humedad = dht.readHumidity();
   float temperatura = dht.readTemperature();
 
-  // Lectura HC-SR04 y Lógica de Histéresis
-  // ... (código resumido para visualización) ...
   if (porcentaje_llenado >= 70.0) {
-    digitalWrite(PIN_BOMBA, HIGH); 
+    digitalWrite(PIN_BOMBA, HIGH);
   } else if (porcentaje_llenado <= 15.0) {
-    digitalWrite(PIN_BOMBA, LOW);  
+    digitalWrite(PIN_BOMBA, LOW);
   }
-  
+
   delay(1500);
 }</code></pre>
                 </div>
@@ -591,7 +874,7 @@ void loop() {
         </section>
 
         <!-- DIAGRAMA TÉCNICO DE ESTRATIGRAFÍA GEOLÓGICA DE RECARGA -->
-        <section class="glass-panel rounded-3xl p-8 space-y-8 relative overflow-hidden">
+        <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 relative overflow-hidden reveal">
             <h3 class="text-xl font-bold text-white mb-6 flex items-center space-x-3">
                 <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold">4</span>
                 <span>Diagrama Físico de Estratigrafía de Recarga del Acuífero</span>
@@ -602,23 +885,34 @@ void loop() {
                     <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed text-justify">
                         La inyección controlada en el subsuelo requiere atravesar un filtro natural o simulado mecánicamente de capas de granulometría variable para prevenir la colmatación y asegurar que el agua procedente del condensador no altere la turbidez de la napa freática.
                     </p>
-                    <ul class="space-y-2 text-xs text-zinc-400 list-inside list-disc">
-                        <li><strong class="text-amber-500">Filtro de Arena Silícea (E1):</strong> Retención primaria de partículas sólidas en suspensión.</li>
-                        <li><strong class="text-zinc-400">Lecho de Grava Fina (E2):</strong> Ofrece estabilidad estructural y distribuye los hilos de flujo de agua.</li>
-                        <li><strong class="text-emerald-500">Filtro de Intercambio de Arcillas/Zeolitas (E3):</strong> Absorción iónica elemental de impurezas procedentes de metales.</li>
-                        <li><strong class="text-celeste-400">Capa de Saturación Subterránea (Acuífero):</strong> Almacenamiento hídrico neto monitorizado por ultrasonido.</li>
+                    <ul class="space-y-3 text-xs text-zinc-400">
+                        <li class="flex items-start space-x-2">
+                            <span class="w-2 h-2 bg-amber-500 rounded-full mt-1 flex-shrink-0"></span>
+                            <span><strong class="text-amber-400">Filtro de Arena Silícea (E1):</strong> Retención primaria de partículas sólidas en suspensión.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="w-2 h-2 bg-zinc-400 rounded-full mt-1 flex-shrink-0"></span>
+                            <span><strong class="text-zinc-300">Lecho de Grava Fina (E2):</strong> Ofrece estabilidad estructural y distribuye los hilos de flujo de agua.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full mt-1 flex-shrink-0"></span>
+                            <span><strong class="text-emerald-400">Filtro de Intercambio de Arcillas/Zeolitas (E3):</strong> Absorción iónica elemental de impurezas procedentes de metales.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="w-2 h-2 bg-celeste-500 rounded-full mt-1 flex-shrink-0"></span>
+                            <span><strong class="text-celeste-400">Capa de Saturación Subterránea (Acuífero):</strong> Almacenamiento hídrico neto monitorizado por ultrasonido.</span>
+                        </li>
                     </ul>
                 </div>
 
                 <div class="p-2 bg-zinc-900/60 rounded-2xl border border-zinc-800 shadow-inner">
                     <p class="text-xs font-bold text-verde-400 mb-2 uppercase tracking-widest text-center"><i class="fa-solid fa-layer-group mr-2"></i>Figura 2: Corte Perfil Estratigráfico de Filtración</p>
-                    
+
                     <svg viewBox="0 0 500 350" class="w-full h-auto rounded-xl">
                         <path d="M 250,5 L 250,45" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="3,3" marker-end="url(#aquifer-arrow)" />
                         <rect x="180" y="5" width="140" height="20" rx="4" fill="#083344" stroke="#0891b2" stroke-width="1" />
                         <text x="250" y="18" fill="#ffffff" font-family="sans-serif" font-size="9" text-anchor="middle">Inyección Controlada</text>
 
-                        <!-- Capas -->
                         <rect x="50" y="50" width="400" height="60" fill="#fef08a" opacity="0.6" stroke="#ca8a04" stroke-width="1" />
                         <circle cx="70" cy="65" r="1" fill="#ca8a04" /><circle cx="120" cy="80" r="1.5" fill="#ca8a04" />
                         <text x="250" y="85" fill="#854d0e" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Filtro de Arena Fina (E1)</text>
@@ -648,21 +942,21 @@ void loop() {
         </section>
 
         <!-- PREGUNTAS FRECUENTES (FAQ) -->
-        <section id="faq" class="glass-panel rounded-3xl p-8 space-y-6">
+        <section id="faq" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <h3 class="text-xl font-bold text-white flex items-center space-x-2">
-                <i class="fa-solid fa-question-circle text-celeste-500"></i>
+                <i class="fa-solid fa-circle-question text-celeste-500"></i>
                 <span>Preguntas Frecuentes (FAQ)</span>
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
+                <div class="space-y-2 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-verde-500/20 transition-colors">
                     <h4 class="text-sm font-bold text-verde-400">¿Cuál es el costo aproximado de implementación de la estación IoT?</h4>
                     <p class="text-xs text-zinc-400 text-justify">
                         El prototipo de laboratorio tiene un coste aproximado de $120 USD. Un sistema real a escala comunitaria requiere infraestructura de mayor envergadura cuyo coste de inversión se estima en $5,500 USD con un mantenimiento anual mínimo.
                     </p>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-2 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-celeste-500/20 transition-colors">
                     <h4 class="text-sm font-bold text-verde-400">¿Cuánto tiempo toma estabilizar las capas freáticas?</h4>
                     <p class="text-xs text-zinc-400 text-justify">
                         Analíticamente, la estabilización es inmediata tras activar la retroalimentación de inyección: el balance neto $\frac{dV}{dt}$ pasa a $0$. Físicamente, el proceso de infiltración toma entre 48 y 72 horas para alcanzar homogeneidad hidrostática en capas arenosas de porosidad media.
@@ -672,7 +966,7 @@ void loop() {
         </section>
 
         <!-- CONTACTO / FORMULARIO -->
-        <section id="contacto" class="glass-panel rounded-3xl p-8 space-y-6">
+        <section id="contacto" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <div class="max-w-2xl">
                 <h3 class="text-xl font-bold text-white flex items-center space-x-2">
                     <i class="fa-solid fa-envelope text-celeste-500"></i>
@@ -682,43 +976,51 @@ void loop() {
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <form class="space-y-4" onsubmit="event.preventDefault();">
+                <form class="space-y-4" onsubmit="event.preventDefault(); this.querySelector('button').innerHTML = '<i class=\'fa-solid fa-check mr-2\'></i>Mensaje Enviado'; this.querySelector('button').disabled = true; setTimeout(() => { this.querySelector('button').innerHTML = 'Enviar Mensaje'; this.querySelector('button').disabled = false; this.reset(); }, 3000);">
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <label class="text-[10px] uppercase font-bold text-zinc-400">Nombre</label>
-                            <input type="text" placeholder="Tu nombre" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs focus:outline-none focus:border-celeste-500 text-white">
+                            <input type="text" placeholder="Tu nombre" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-celeste-500 text-white placeholder-zinc-600 transition-all">
                         </div>
                         <div class="space-y-1">
                             <label class="text-[10px] uppercase font-bold text-zinc-400">Correo Institucional</label>
-                            <input type="email" placeholder="estudiante@continental.edu.pe" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs focus:outline-none focus:border-celeste-500 text-white">
+                            <input type="email" placeholder="estudiante@continental.edu.pe" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-celeste-500 text-white placeholder-zinc-600 transition-all">
                         </div>
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] uppercase font-bold text-zinc-400">Mensaje</label>
-                        <textarea placeholder="Consulta técnica o sugerencias..." rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs focus:outline-none focus:border-celeste-500 text-white"></textarea>
+                        <textarea placeholder="Consulta técnica o sugerencias..." rows="3" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-celeste-500 text-white placeholder-zinc-600 transition-all resize-none"></textarea>
                     </div>
-                    <button class="w-full py-2 bg-gradient-to-r from-verde-600 to-celeste-600 hover:from-verde-500 hover:to-celeste-500 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition">Enviar Mensaje</button>
+                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-verde-600 to-celeste-600 hover:from-verde-500 hover:to-celeste-500 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition-all duration-200 active:scale-[0.98]">
+                        Enviar Mensaje
+                    </button>
                 </form>
 
                 <div class="space-y-4 flex flex-col justify-between text-xs text-zinc-400">
-                    <div class="space-y-3">
-                        <p class="flex items-center space-x-2">
-                            <i class="fa-solid fa-envelope text-celeste-500"></i>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/50">
+                            <div class="w-8 h-8 rounded-lg bg-celeste-500/10 flex items-center justify-center text-celeste-400">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
                             <span>soporte.hidro@continental.edu.pe</span>
-                        </p>
-                        <p class="flex items-center space-x-2">
-                            <i class="fa-brands fa-whatsapp text-verde-400"></i>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/50">
+                            <div class="w-8 h-8 rounded-lg bg-verde-500/10 flex items-center justify-center text-verde-400">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
                             <span>+51 987 654 321</span>
-                        </p>
-                        <p class="flex items-center space-x-2">
-                            <i class="fa-solid fa-location-dot text-celeste-500"></i>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/50">
+                            <div class="w-8 h-8 rounded-lg bg-celeste-500/10 flex items-center justify-center text-celeste-400">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
                             <span>Av. San Carlos 1980, Huancayo - Perú</span>
-                        </p>
+                        </div>
                     </div>
-                    <div class="pt-4 border-t border-zinc-800/80 flex space-x-4 text-sm text-zinc-500">
-                        <a href="#" class="hover:text-celeste-400"><i class="fa-brands fa-github"></i></a>
-                        <a href="#" class="hover:text-celeste-400"><i class="fa-brands fa-linkedin"></i></a>
-                        <a href="#" class="hover:text-celeste-400"><i class="fa-solid fa-graduation-cap"></i></a>
+                    <div class="pt-4 border-t border-zinc-800/80 flex space-x-4 text-sm">
+                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-celeste-400 hover:border-celeste-500/30 hover:bg-celeste-500/5 transition-all"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-celeste-400 hover:border-celeste-500/30 hover:bg-celeste-500/5 transition-all"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-celeste-400 hover:border-celeste-500/30 hover:bg-celeste-500/5 transition-all"><i class="fa-solid fa-graduation-cap"></i></a>
                     </div>
                 </div>
             </div>
@@ -726,7 +1028,7 @@ void loop() {
     </main>
 
     <!-- Footer -->
-    <footer class="bg-zinc-950 border-t border-zinc-900 py-12 mt-12 text-zinc-500 text-xs relative z-10">
+    <footer class="bg-zinc-950 border-t border-zinc-900 py-10 mt-12 text-zinc-500 text-xs relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-verde-500 to-celeste-500 p-0.5">
@@ -739,7 +1041,7 @@ void loop() {
                     <p class="text-[10px] text-zinc-600">Proyecto de Cálculo Diferencial. Universidad Continental, 2026.</p>
                 </div>
             </div>
-            
+
             <div class="text-center md:text-right space-y-1">
                 <p>&copy; 2026. Todos los derechos reservados.</p>
                 <p class="text-[10px] text-zinc-600">Desarrollado por Juan Gustavo Segura Villegas & Paul Eduardo Ccanqqueri Saraya.</p>
@@ -747,417 +1049,341 @@ void loop() {
         </div>
     </footer>
 
-    <!-- Script de Simulación e IoT y Animación Canvas -->
     <script>
-        // --- 1. FONDO ANIMADO DE PARTÍCULAS (AGUA) ---
+        // ===== LOADER =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 600);
+        });
+
+        // ===== SCROLL PROGRESS BAR =====
+        const scrollProgress = document.getElementById('scrollProgress');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            scrollProgress.style.width = progress + '%';
+        });
+
+        // ===== BACK TO TOP =====
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== MOBILE MENU =====
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('open');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+        document.querySelectorAll('#mobileMenu a[data-nav]').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('open');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // ===== SCROLL REVEAL (Intersection Observer) =====
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 80);
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ===== ACTIVE NAV LINK =====
+        const navLinks = document.querySelectorAll('.nav-link[data-nav]');
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const top = section.offsetTop - 150;
+                if (window.scrollY >= top) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+            });
+        });
+
+        // ===== PARTICLES (Canvas) =====
         const canvas = document.getElementById('particleCanvas');
-        const ctxCanvas = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
         let particles = [];
-        let mouseX = 0;
-        let mouseY = 0;
+        let mouseX = 0, mouseY = 0;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        
         window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+        window.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
 
         class Particle {
             constructor() {
+                this.reset();
+            }
+            reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
                 this.size = Math.random() * 2.5 + 0.5;
-                this.speedY = Math.random() * -0.5 - 0.1; // Flotando hacia arriba (evaporación)
+                this.speedY = Math.random() * -0.5 - 0.1;
                 this.speedX = (Math.random() - 0.5) * 0.3;
-                this.color = Math.random() > 0.5 ? 'rgba(34, 197, 94, 0.4)' : 'rgba(6, 182, 212, 0.4)'; // Verde o Celeste
+                this.color = Math.random() > 0.5 ? 'rgba(34, 197, 94, 0.4)' : 'rgba(6, 182, 212, 0.4)';
+                this.opacity = Math.random() * 0.5 + 0.2;
             }
             update() {
                 this.y += this.speedY;
                 this.x += this.speedX;
-
-                // Interacción sutil con el ratón
-                let dx = mouseX - this.x;
-                let dy = mouseY - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 100) {
-                    this.x -= dx * 0.01;
-                    this.y -= dy * 0.01;
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                    this.x -= dx * 0.008;
+                    this.y -= dy * 0.008;
                 }
-
-                // Reposicionamiento si sale de la pantalla
-                if (this.y < 0) {
-                    this.y = canvas.height;
-                    this.x = Math.random() * canvas.width;
-                }
-                if (this.x < 0 || this.x > canvas.width) {
-                    this.speedX *= -1;
-                }
+                if (this.y < -10) { this.y = canvas.height + 10; this.x = Math.random() * canvas.width; }
+                if (this.x < -10 || this.x > canvas.width + 10) this.speedX *= -1;
             }
             draw() {
-                ctxCanvas.fillStyle = this.color;
-                ctxCanvas.beginPath();
-                ctxCanvas.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctxCanvas.fill();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
             }
         }
 
         function initParticles() {
             resizeCanvas();
-            particles = [];
-            let particleCount = Math.floor(window.innerWidth / 15); // Cantidad dependiente del ancho
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
+            particles = Array.from({ length: Math.floor(window.innerWidth / 14) }, () => new Particle());
         }
 
         function animateParticles() {
-            ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateParticles);
         }
-
         initParticles();
         animateParticles();
 
-        // --- 2. INSTANCIACIÓN DE VARIABLES DE SIMULACIÓN HÍDRICA ---
-        let v0 = 50; 
-        let R = 3; 
-        let c = 0.60; 
-        let k2 = 0.05; 
-        let techActive = true; 
+        // ===== SIMULATION VARIABLES =====
+        let v0 = 50, R = 3, c = 0.60, k2 = 0.05, techActive = true;
+        let humidity = 75, temperature = 25, tankLevel = 45, totalRecharged = 0, pumpActive = false;
+        let serialSeconds = 0;
 
-        // Parámetros de Simulación IoT
-        let humidity = 75; 
-        let temperature = 25; 
-        let tankLevel = 45; // en % (rango 0-100)
-        let totalRecharged = 0; // litros acumulados
-        let pumpActive = false; 
+        // DOM refs
+        const $ = id => document.getElementById(id);
+        const v0Slider = $('v0Slider'), v0Val = $('v0Val');
+        const rSlider = $('rSlider'), rVal = $('rVal');
+        const cSlider = $('cSlider'), cVal = $('cVal');
+        const k2Slider = $('k2Slider'), k2Val = $('k2Val');
+        const techToggle = $('techToggle');
+        const colapseYearText = $('colapseYear'), vMaxText = $('vMaxText'), tMaxText = $('tMaxText');
+        const stabilityStatus = $('stabilityStatus'), stabilityCard = $('stabilityCard');
+        const humDHTSlider = $('humDHTSlider'), humDHTVal = $('humDHTVal');
+        const tempDHTSlider = $('tempDHTSlider'), tempDHTVal = $('tempDHTVal');
+        const condensationRateText = $('condensationRate'), condBar = $('condBar');
+        const tankLiquid = $('tankLiquid'), tankLevelPctText = $('tankLevelPctText');
+        const pumpIcon = $('pumpIcon'), pumpIconContainer = $('pumpIconContainer');
+        const pumpStatusBadge = $('pumpStatusBadge'), rechargedVolText = $('rechargedVolText');
+        const terminalLog = $('terminalLog'), serialTimer = $('serialTimer');
+        const btnAutoInject = $('btnAutoInject'), btnClearLogs = $('btnClearLogs');
 
-        // Elementos DOM del Simulador Matemático
-        const v0Slider = document.getElementById('v0Slider');
-        const v0Val = document.getElementById('v0Val');
-        const rSlider = document.getElementById('rSlider');
-        const rVal = document.getElementById('rVal');
-        const cSlider = document.getElementById('cSlider');
-        const cVal = document.getElementById('cVal');
-        const k2Slider = document.getElementById('k2Slider');
-        const k2Val = document.getElementById('k2Val');
-        const techToggle = document.getElementById('techToggle');
-        const colapseYearText = document.getElementById('colapseYear');
-        const vMaxText = document.getElementById('vMaxText');
-        const tMaxText = document.getElementById('tMaxText');
-        const stabilityStatusText = document.getElementById('stabilityStatus');
-
-        // Elementos DOM del Simulador IoT
-        const humDHTSlider = document.getElementById('humDHTSlider');
-        const humDHTVal = document.getElementById('humDHTVal');
-        const tempDHTSlider = document.getElementById('tempDHTSlider');
-        const tempDHTVal = document.getElementById('tempDHTVal');
-        const condensationRateText = document.getElementById('condensationRate');
-        const tankLiquid = document.getElementById('tankLiquid');
-        const tankLevelPctText = document.getElementById('tankLevelPctText');
-        const tankVolumeText = document.getElementById('tankVolumeText');
-        const pumpIcon = document.getElementById('pumpIcon');
-        const pumpIconContainer = document.getElementById('pumpIconContainer');
-        const pumpStatusBadge = document.getElementById('pumpStatusBadge');
-        const rechargedVolText = document.getElementById('rechargedVolText');
-        const terminalLog = document.getElementById('terminalLog');
-        const btnAutoInject = document.getElementById('btnAutoInject');
-        const btnClearLogs = document.getElementById('btnClearLogs');
-
-        // --- 3. CHART JS SETUP ---
-        const ctx = document.getElementById('simulationChart').getContext('2d');
+        // ===== CHART =====
         let simulationChart;
+        const chartCtx = document.getElementById('simulationChart').getContext('2d');
 
         function buildData() {
-            const labels = [];
-            const dataSinTech = [];
-            const dataConTech = [];
-            const dataPopGrowth = [];
-
+            const labels = [], dataSinTech = [], dataConTech = [], dataPopGrowth = [];
             let colapseT = null;
 
             for (let t = 0; t <= 25; t += 0.5) {
                 labels.push(`Año ${t.toFixed(1)}`);
-
-                // Modelo base Sin Tecnología
-                let valSinTech = -0.5 * c * t * t + R * t + v0;
-                dataSinTech.push(valSinTech > 0 ? valSinTech : 0);
-
-                if (valSinTech <= 0 && colapseT === null) {
-                    colapseT = t;
-                }
-
-                // Modelo con Tecnología (Compensación exacta)
-                let valConTech = v0;
-                dataConTech.push(valConTech);
-
-                // Modelo con Crecimiento Poblacional e Impacto Demográfico
-                let factor = 0.25 + (k2 / 2);
-                let valPop = v0 + R * t - factor * t * t;
-                dataPopGrowth.push(valPop > 0 ? valPop : 0);
+                const valSinTech = -0.5 * c * t * t + R * t + v0;
+                dataSinTech.push(Math.max(0, valSinTech));
+                if (valSinTech <= 0 && colapseT === null) colapseT = t;
+                dataConTech.push(v0);
+                const factor = 0.25 + (k2 / 2);
+                dataPopGrowth.push(Math.max(0, v0 + R * t - factor * t * t));
             }
 
-            // Calcular óptimos analíticos teóricos
-            let tOptimo = R / c;
-            let vOptimo = -0.5 * c * tOptimo * tOptimo + R * tOptimo + v0;
-
+            const tOptimo = R / c;
+            const vOptimo = -0.5 * c * tOptimo * tOptimo + R * tOptimo + v0;
             vMaxText.textContent = `${vOptimo.toFixed(2)} MMC`;
             tMaxText.textContent = `Año ${tOptimo.toFixed(1)}`;
 
             if (colapseT !== null) {
                 colapseYearText.textContent = `${colapseT.toFixed(1)} años`;
-                colapseYearText.className = "font-bold text-red-400 font-mono";
+                colapseYearText.className = 'font-bold text-red-400 font-mono';
             } else {
-                colapseYearText.textContent = "> 25 años";
-                colapseYearText.className = "font-bold text-emerald-400 font-mono";
+                colapseYearText.textContent = '> 25 años';
+                colapseYearText.className = 'font-bold text-emerald-400 font-mono';
             }
 
-            // Estado de estabilidad actual
             if (techActive) {
-                stabilityStatusText.textContent = "Estable";
-                stabilityStatusText.className = "text-xs font-bold text-emerald-400 font-mono";
+                stabilityStatus.textContent = 'Estable';
+                stabilityStatus.className = 'text-xs font-bold text-emerald-400 font-mono';
+                stabilityCard.className = 'p-2.5 bg-zinc-900/60 rounded-xl border border-emerald-500/30';
             } else {
-                stabilityStatusText.textContent = "Deficitario";
-                stabilityStatusText.className = "text-xs font-bold text-red-400 font-mono";
+                stabilityStatus.textContent = 'Deficitario';
+                stabilityStatus.className = 'text-xs font-bold text-red-400 font-mono';
+                stabilityCard.className = 'p-2.5 bg-zinc-900/60 rounded-xl border border-red-500/30';
             }
 
             return { labels, dataSinTech, dataConTech, dataPopGrowth };
         }
 
         function updateChart() {
-            const chartData = buildData();
-
+            const d = buildData();
             if (simulationChart) {
-                simulationChart.data.labels = chartData.labels;
-                simulationChart.data.datasets[0].data = chartData.dataSinTech;
-                simulationChart.data.datasets[1].data = chartData.dataConTech;
-                simulationChart.data.datasets[2].data = chartData.dataPopGrowth;
-                
-                // Mostrar/Ocultar curva según estado de la tecnología
+                simulationChart.data.labels = d.labels;
+                simulationChart.data.datasets[0].data = d.dataSinTech;
+                simulationChart.data.datasets[1].data = d.dataConTech;
+                simulationChart.data.datasets[2].data = d.dataPopGrowth;
                 simulationChart.data.datasets[1].hidden = !techActive;
-                
-                simulationChart.update();
+                simulationChart.update('none');
             } else {
-                simulationChart = new Chart(ctx, {
+                simulationChart = new Chart(chartCtx, {
                     type: 'line',
                     data: {
-                        labels: chartData.labels,
+                        labels: d.labels,
                         datasets: [
-                            {
-                                label: 'Escenario Sin Tecnología (Colapso)',
-                                data: chartData.dataSinTech,
-                                borderColor: 'rgba(239, 68, 68, 0.9)',
-                                backgroundColor: 'rgba(239, 68, 68, 0.03)',
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.3
-                            },
-                            {
-                                label: 'Escenario Estabilizado con Captación',
-                                data: chartData.dataConTech,
-                                borderColor: 'rgba(6, 182, 212, 0.9)',
-                                backgroundColor: 'rgba(6, 182, 212, 0.03)',
-                                borderWidth: 3,
-                                fill: false,
-                                tension: 0.1,
-                                hidden: !techActive
-                            },
-                            {
-                                label: 'Impacto Poblacional Extra (Demográfico)',
-                                data: chartData.dataPopGrowth,
-                                borderColor: 'rgba(34, 197, 94, 0.9)',
-                                backgroundColor: 'transparent',
-                                borderDash: [5, 5],
-                                borderWidth: 2,
-                                fill: false,
-                                tension: 0.3
-                            }
+                            { label: 'Sin Tecnología (Colapso)', data: d.dataSinTech, borderColor: 'rgba(239,68,68,0.9)', backgroundColor: 'rgba(239,68,68,0.03)', borderWidth: 2, fill: true, tension: 0.3 },
+                            { label: 'Estabilizado con Captación', data: d.dataConTech, borderColor: 'rgba(6,182,212,0.9)', backgroundColor: 'rgba(6,182,212,0.03)', borderWidth: 3, fill: false, tension: 0.1, hidden: !techActive },
+                            { label: 'Impacto Demográfico', data: d.dataPopGrowth, borderColor: 'rgba(34,197,94,0.9)', backgroundColor: 'transparent', borderDash: [5,5], borderWidth: 2, fill: false, tension: 0.3 }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: { duration: 400 },
                         plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: '#a1a1aa',
-                                    font: { size: 10 }
-                                }
-                            }
+                            legend: { position: 'bottom', labels: { color: '#a1a1aa', font: { size: 10 }, boxWidth: 14, padding: 12 } }
                         },
                         scales: {
-                            y: {
-                                grid: { color: 'rgba(63, 63, 70, 0.2)' },
-                                ticks: { color: '#a1a1aa' },
-                                title: { display: true, text: 'Volumen (MMC)', color: '#a1a1aa' }
-                            },
-                            x: {
-                                grid: { color: 'rgba(63, 63, 70, 0.2)' },
-                                ticks: { color: '#a1a1aa' }
-                            }
+                            y: { grid: { color: 'rgba(63,63,70,0.2)' }, ticks: { color: '#a1a1aa', font: { size: 10 } }, title: { display: true, text: 'Volumen (MMC)', color: '#a1a1aa', font: { size: 10 } } },
+                            x: { grid: { color: 'rgba(63,63,70,0.2)' }, ticks: { color: '#a1a1aa', font: { size: 9 } } }
                         }
                     }
                 });
             }
         }
 
-        // --- 4. SISTEMA DE LOGS TERMINAL ESP32 ---
-        function appendLog(message, type = "info") {
-            const timestamp = new Date().toLocaleTimeString();
-            let color = "text-emerald-400";
-            if (type === "warning") color = "text-amber-400";
-            if (type === "danger") color = "text-red-400";
-            if (type === "success") color = "text-cyan-400";
-
-            terminalLog.innerHTML += `<div class="${color}"><span class="text-zinc-600">[${timestamp}]</span> ${message}</div>`;
+        // ===== TERMINAL LOGS =====
+        function appendLog(message, type = 'info') {
+            const ts = new Date().toLocaleTimeString();
+            const colors = { info: 'text-emerald-400', warning: 'text-amber-400', danger: 'text-red-400', success: 'text-cyan-400' };
+            terminalLog.innerHTML += `<div class="${colors[type] || colors.info}"><span class="text-zinc-600">[${ts}]</span> ${message}</div>`;
             terminalLog.scrollTop = terminalLog.scrollHeight;
         }
 
-        // --- 5. SIMULACIÓN HARDWARE INTERACTIVA ---
+        // ===== HARDWARE SIMULATION =====
         function calculateCondensation() {
-            let humidityFactor = Math.max(0, (humidity - 40) / 60); 
+            const humidityFactor = Math.max(0, (humidity - 40) / 60);
             let tempFactor = 1.0;
-            if (temperature > 35) tempFactor = 0.7; 
-            if (temperature < 15) tempFactor = 0.8; 
-
-            let rate = (0.8 * humidityFactor * tempFactor); 
-            if (rate < 0) rate = 0;
-
+            if (temperature > 35) tempFactor = 0.7;
+            if (temperature < 15) tempFactor = 0.8;
+            const rate = Math.max(0, 0.8 * humidityFactor * tempFactor);
             condensationRateText.textContent = `${rate.toFixed(2)} L/min`;
+            condBar.style.width = `${Math.min(100, rate * 100)}%`;
             return rate;
         }
 
         setInterval(() => {
+            serialSeconds++;
+            const mins = String(Math.floor(serialSeconds / 60)).padStart(2, '0');
+            const secs = String(serialSeconds % 60).padStart(2, '0');
+            serialTimer.textContent = `${mins}:${secs}`;
+
             const condRate = calculateCondensation();
-            let addedWater = (condRate * 0.85); 
-            tankLevel += (addedWater / 100) * 100; 
+            tankLevel += (condRate * 0.85);
             if (tankLevel > 100) tankLevel = 100;
 
-            // Lógica de histéresis
             if (tankLevel >= 70 && !pumpActive) {
                 pumpActive = true;
-                appendLog("BOMBA ACTIVADA (Nivel > 70%). Iniciando inyección hídrica artificial al acuífero.", "success");
+                appendLog('BOMBA ACTIVADA (Nivel > 70%). Iniciando inyección hídrica artificial.', 'success');
             }
-
             if (pumpActive) {
-                let injectionQuantity = 2.5; 
-                tankLevel -= (injectionQuantity / 100) * 100;
-                totalRecharged += injectionQuantity;
-
+                tankLevel -= 2.5;
+                totalRecharged += 2.5;
                 if (tankLevel <= 15) {
                     pumpActive = false;
-                    appendLog("BOMBA APAGADA (Nivel < 15%). Evitando cavitación y succión de aire.", "warning");
+                    appendLog('BOMBA APAGADA (Nivel < 15%). Evitando cavitación.', 'warning');
                 }
             }
-
             if (tankLevel < 0) tankLevel = 0;
 
-            // UI
             tankLiquid.style.height = `${tankLevel.toFixed(1)}%`;
-            tankLevelPctText.textContent = `${tankLevel.toFixed(0)}%`;
-            tankVolumeText.textContent = `${(tankLevel).toFixed(1)} Litros`;
+            tankLevelPctText.textContent = `${Math.round(tankLevel)}%`;
             rechargedVolText.textContent = `${totalRecharged.toFixed(1)} Litros`;
 
             if (pumpActive) {
-                pumpIcon.className = "fa-solid fa-rotate text-emerald-400 animate-spin";
-                pumpIconContainer.className = "w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-lg glow-verde";
-                pumpStatusBadge.textContent = "INJECTING";
-                pumpStatusBadge.className = "text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold";
+                pumpIcon.className = 'fa-solid fa-rotate text-emerald-400 animate-spin';
+                pumpIconContainer.className = 'w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl glow-verde';
+                pumpStatusBadge.textContent = 'INYECTANDO';
+                pumpStatusBadge.className = 'text-[10px] px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold';
             } else {
-                pumpIcon.className = "fa-solid fa-rotate text-zinc-600";
-                pumpIconContainer.className = "w-14 h-14 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center text-lg";
-                pumpStatusBadge.textContent = "STANDBY";
-                pumpStatusBadge.className = "text-[9px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800";
+                pumpIcon.className = 'fa-solid fa-rotate text-zinc-600';
+                pumpIconContainer.className = 'w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-xl';
+                pumpStatusBadge.textContent = 'STANDBY';
+                pumpStatusBadge.className = 'text-[10px] px-2.5 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800 font-bold';
             }
 
-            if (Math.random() > 0.6) {
-                appendLog(`DHT22: Temp=${temperature}°C, Hum=${humidity}%. HC-SR04: Nivel=${tankLevel.toFixed(1)}%. Bomba=${pumpActive ? "ON" : "OFF"}`);
+            if (Math.random() > 0.55) {
+                appendLog(`DHT22: ${temperature}°C, ${humidity}%. HC-SR04: ${tankLevel.toFixed(1)}%. Bomba: ${pumpActive ? 'ON' : 'OFF'}`);
             }
-
         }, 1500);
 
-        // --- 6. EVENT LISTENERS ---
-        v0Slider.addEventListener('input', (e) => {
-            v0 = parseFloat(e.target.value);
-            v0Val.textContent = `${v0} MMC`;
-            updateChart();
-        });
+        // ===== EVENT LISTENERS =====
+        v0Slider.addEventListener('input', e => { v0 = +e.target.value; v0Val.textContent = `${v0} MMC`; updateChart(); });
+        rSlider.addEventListener('input', e => { R = +e.target.value; rVal.textContent = `${R.toFixed(1)} MMC/año`; updateChart(); });
+        cSlider.addEventListener('input', e => { c = +e.target.value; cVal.textContent = c.toFixed(2); updateChart(); });
+        k2Slider.addEventListener('input', e => { k2 = +e.target.value; k2Val.textContent = k2.toFixed(2); updateChart(); });
+        techToggle.addEventListener('change', e => { techActive = e.target.checked; updateChart(); appendLog(`Tecnología ${techActive ? 'ACTIVADA' : 'DESACTIVADA'}`, techActive ? 'success' : 'danger'); });
+        humDHTSlider.addEventListener('input', e => { humidity = +e.target.value; humDHTVal.textContent = `${humidity}%`; calculateCondensation(); });
+        tempDHTSlider.addEventListener('input', e => { temperature = +e.target.value; tempDHTVal.textContent = `${temperature}°C`; calculateCondensation(); });
+        btnAutoInject.addEventListener('click', () => { tankLevel = Math.min(100, tankLevel + 25); appendLog('Inyección manual de contingencia activada.', 'success'); });
+        btnClearLogs.addEventListener('click', () => { terminalLog.innerHTML = ''; appendLog('Logs limpiados por el operador.'); });
 
-        rSlider.addEventListener('input', (e) => {
-            R = parseFloat(e.target.value);
-            rVal.textContent = `${R.toFixed(1)} MMC/año`;
-            updateChart();
-        });
-
-        cSlider.addEventListener('input', (e) => {
-            c = parseFloat(e.target.value);
-            cVal.textContent = c.toFixed(2);
-            updateChart();
-        });
-
-        k2Slider.addEventListener('input', (e) => {
-            k2 = parseFloat(e.target.value);
-            k2Val.textContent = k2.toFixed(2);
-            updateChart();
-        });
-
-        techToggle.addEventListener('change', (e) => {
-            techActive = e.target.checked;
-            updateChart();
-            appendLog(`Tecnología de captación e inyección hídrica manual ${techActive ? 'ACTIVADA' : 'DESACTIVADA'}`, techActive ? "success" : "danger");
-        });
-
-        humDHTSlider.addEventListener('input', (e) => {
-            humidity = parseInt(e.target.value);
-            humDHTVal.textContent = `${humidity} %`;
-            calculateCondensation();
-        });
-
-        tempDHTSlider.addEventListener('input', (e) => {
-            temperature = parseInt(e.target.value);
-            tempDHTVal.textContent = `${temperature} °C`;
-            calculateCondensation();
-        });
-
-        btnAutoInject.addEventListener('click', () => {
-            tankLevel += 25; 
-            if (tankLevel > 100) tankLevel = 100;
-            appendLog("Comando manual recibido: Inyección de contingencia de agua de captación.", "success");
-        });
-
-        btnClearLogs.addEventListener('click', () => {
-            terminalLog.innerHTML = "";
-            appendLog("Logs del monitor serial limpiados por el operador.");
-        });
-
+        // ===== INIT =====
         window.onload = function() {
-            // Renderizar expresiones matemáticas de KaTeX de forma segura una vez cargado el DOM
             if (typeof renderMathInElement === 'function') {
                 renderMathInElement(document.body, {
                     delimiters: [
-                        {left: '$$', right: '$$', display: true},
-                        {left: '$', right: '$', display: false},
-                        {left: '\\(', right: '\\)', display: false},
-                        {left: '\\[', right: '\\]', display: true}
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false },
+                        { left: '\\(', right: '\\)', display: false },
+                        { left: '\\[', right: '\\]', display: true }
                     ],
-                    throwOnError : false
+                    throwOnError: false
                 });
             }
-            appendLog("Iniciando microcontrolador ESP32 v2.5...");
-            appendLog("DHT22 Inicializado correctamente.");
-            appendLog("HC-SR04 calibrado. Umbral superior: 70%, Umbral de succión: 15%.");
-            appendLog("Conectando a red WiFi local para telemetría Dashboard...");
-            appendLog("Broker MQTT conectado: publicando en /acuifero/telemetria", "success");
+            appendLog('Iniciando ESP32 v2.5...');
+            appendLog('DHT22 Inicializado correctamente.');
+            appendLog('HC-SR04 calibrado: 70% / 15% umbrales.');
+            appendLog('Conectando a red WiFi local...');
+            appendLog('MQTT conectado: /acuifero/telemetria', 'success');
             updateChart();
         };
     </script>
