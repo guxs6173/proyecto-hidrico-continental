@@ -278,7 +278,7 @@
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: #22c55e;
+            background: #0ea5e9;
             position: absolute;
             bottom: -8px;
             left: 50%;
@@ -463,6 +463,32 @@
             height: 100%;
         }
 
+        /* TOP ACCENT BAR */
+        .top-accent {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            z-index: 10000;
+            background: linear-gradient(90deg,
+                #ef4444 0%, #ef4444 12.5%,
+                #f59e0b 12.5%, #f59e0b 25%,
+                #10b981 25%, #10b981 37.5%,
+                #06b6d4 37.5%, #06b6d4 50%,
+                #0ea5e9 50%, #0ea5e9 62.5%,
+                #8b5cf6 62.5%, #8b5cf6 75%,
+                #ec4899 75%, #ec4899 87.5%,
+                #ef4444 87.5%, #ef4444 100%
+            );
+            background-size: 200% 100%;
+            animation: rainbowBar 8s linear infinite;
+        }
+        @keyframes rainbowBar {
+            0% { background-position: 0% 0%; }
+            100% { background-position: -200% 0%; }
+        }
+
         /* FORM STYLES */
         .form-input {
             transition: all 0.2s;
@@ -477,6 +503,9 @@
     </style>
 </head>
 <body class="animated-bg text-zinc-100 font-sans min-h-screen selection:bg-agua-500/30 selection:text-white relative">
+
+    <!-- TOP ACCENT BAR -->
+    <div class="top-accent"></div>
 
     <!-- LOADING SCREEN -->
     <div id="loader">
@@ -533,11 +562,11 @@
 
             <!-- Desktop Nav -->
             <nav class="hidden lg:flex items-center space-x-8">
-                <a href="#introduccion" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
+                <a href="#introduccion" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-oceano-400 transition" data-nav>
                     Contexto
                     <span class="nav-dot"></span>
                 </a>
-                <a href="#modelo-matematico" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
+                <a href="#modelo-matematico" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-verde-400 transition" data-nav>
                     Desarrollo Matemático
                     <span class="nav-dot"></span>
                 </a>
@@ -545,7 +574,7 @@
                     Simulador
                     <span class="nav-dot"></span>
                 </a>
-                <a href="#hardware" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
+                <a href="#hardware" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-oceano-400 transition" data-nav>
                     Hardware IoT
                     <span class="nav-dot"></span>
                 </a>
@@ -566,9 +595,13 @@
 
     <!-- Héroe / Cabecera de Proyecto Universitario -->
     <section class="relative overflow-hidden border-b border-zinc-900/50 py-20 lg:py-32 z-10">
-        <div class="absolute inset-0 z-[-1] opacity-20 img-overlay">
+        <div class="absolute inset-0 z-[-1] opacity-25 img-overlay">
             <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920" alt="" class="w-full h-full object-cover">
         </div>
+        <!-- Colorful gradient accents -->
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-oceano-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-verde-500/8 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-agua-500/5 rounded-full blur-[150px] pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative space-y-8">
             <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-verde-500/20 to-agua-500/20 text-agua-300 border border-agua-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm reveal">
