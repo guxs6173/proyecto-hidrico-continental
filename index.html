@@ -286,6 +286,123 @@
             box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.1);
         }
 
+        /* GRADIENT BORDER CARDS */
+        .card-gradient-border {
+            position: relative;
+        }
+        .card-gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(34,197,94,0.3), rgba(6,182,212,0.3), transparent, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .card-gradient-border:hover::before {
+            opacity: 1;
+        }
+
+        /* STAT COUNTERS */
+        .stat-number {
+            font-feature-settings: "tnum";
+        }
+
+        /* TIMELINE */
+        .timeline-line {
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #22c55e, #06b6d4, transparent);
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .timeline-line.visible {
+            transform: scaleY(1);
+        }
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        /* TECH ICON PULSE */
+        .tech-icon {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .tech-icon:hover {
+            transform: translateY(-4px) scale(1.05);
+        }
+
+        /* PARALLAX SMOOTH */
+        .parallax-section {
+            will-change: transform;
+        }
+
+        /* PROFILE IMAGE CIRCLE */
+        .profile-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(6,182,212,0.2);
+            transition: all 0.3s;
+        }
+        .profile-img:hover {
+            border-color: rgba(6,182,212,0.5);
+            transform: scale(1.05);
+        }
+
+        /* FLOATING DOWNLOAD BUTTON */
+        #floatDownload {
+            position: fixed;
+            bottom: 82px;
+            right: 28px;
+            z-index: 9997;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #4ade80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px) scale(0.9);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(12px);
+            text-decoration: none;
+        }
+        #floatDownload.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        #floatDownload:hover {
+            background: rgba(34, 197, 94, 0.3);
+            box-shadow: 0 0 24px rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
         /* FORM STYLES */
         .form-input {
             transition: all 0.2s;
@@ -318,6 +435,11 @@
         <i class="fa-solid fa-arrow-up text-sm"></i>
     </button>
 
+    <!-- FLOATING DOWNLOAD -->
+    <a id="floatDownload" href="#" aria-label="Descargar PDF" onclick="event.preventDefault(); appendLog('Descargando reporte técnico del proyecto...', 'success');">
+        <i class="fa-solid fa-file-pdf text-sm"></i>
+    </a>
+
     <!-- MOBILE MENU OVERLAY -->
     <div id="mobileMenu">
         <a href="#introduccion" class="active" data-nav>Contexto</a>
@@ -326,7 +448,7 @@
         <a href="#hardware" data-nav>Hardware IoT</a>
         <a href="#faq" data-nav>FAQ</a>
         <a href="#contacto" data-nav>Contacto</a>
-        <span class="mt-4 text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-4 py-1.5 rounded-full font-mono">UTP - 2026</span>
+                        <span class="mt-4 text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-4 py-1.5 rounded-full font-mono">Continental - 2026</span>
     </div>
 
     <!-- Canvas para el fondo interactivo (Partículas de agua) -->
@@ -369,7 +491,7 @@
                 </a>
                 <span class="h-4 w-px bg-zinc-700"></span>
                 <span class="text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full font-mono whitespace-nowrap">
-                    UTP - 2026
+                    Continental - 2026
                 </span>
             </nav>
 
@@ -417,29 +539,57 @@
 
             <!-- Integrantes & Roles -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 reveal">
-                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-celeste-500/30 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform">JS</div>
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-celeste-500/30 hover:bg-celeste-500/[0.02] transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100&h=100" alt="" class="profile-img w-11 h-11">
                     <div>
                         <h4 class="text-sm font-bold text-white">Juan Gustavo Segura Villegas</h4>
                         <p class="text-xs text-zinc-400">Firmware ESP32 & IoT Integración</p>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-verde-500/30 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform">CC</div>
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-verde-500/30 hover:bg-verde-500/[0.02] transition-all duration-300">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100&h=100" alt="" class="profile-img w-11 h-11">
                     <div>
                         <h4 class="text-sm font-bold text-white">Ccanqqueri Saraya Paul Eduardo</h4>
                         <p class="text-xs text-zinc-400">Modelación Matemática & Hidrología</p>
                     </div>
                 </div>
 
-                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between group">
+                <div class="glass-panel rounded-2xl p-4 flex items-center justify-between group hover:border-zinc-600/50 transition-all duration-300">
                     <div>
                         <h4 class="text-xs uppercase tracking-wider text-zinc-400 font-bold">Proyecto Integrador</h4>
                         <p class="text-xs font-bold text-white">Cálculo Diferencial aplicado a Ingeniería</p>
                         <p class="text-[10px] text-zinc-400">Sede Central • Sometido para Evaluación</p>
                     </div>
-                    <i class="fa-solid fa-microchip text-2xl text-verde-500/30 group-hover:text-verde-400 transition-colors"></i>
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-verde-600 to-celeste-500 p-0.5 glow-celeste">
+                        <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
+                            <i class="fa-solid fa-file-lines text-xs text-celeste-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS COUNTERS BAR -->
+    <section class="relative z-10 -mt-8 mb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 reveal">
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
+                    <div class="text-2xl sm:text-3xl font-black text-celeste-400 stat-number" data-count="18.84">0</div>
+                    <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Años hasta colapso (sin tech)</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
+                    <div class="text-2xl sm:text-3xl font-black text-verde-400 stat-number" data-count="57.5">0</div>
+                    <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Vol. máximo natural (MMC)</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
+                    <div class="text-2xl sm:text-3xl font-black text-celeste-400 stat-number" data-count="100">0</div>
+                    <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Eficiencia de captación (%)</p>
+                </div>
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
+                    <div class="text-2xl sm:text-3xl font-black text-verde-400 stat-number" data-count="2">0</div>
+                    <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Investigadores del proyecto</p>
                 </div>
             </div>
         </div>
@@ -691,6 +841,99 @@
                     <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 transition-colors" id="stabilityCard">
                         <p class="text-[9px] text-zinc-400">Estado Dinámico</p>
                         <p id="stabilityStatus" class="text-xs font-bold text-emerald-400 font-mono">Estable</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TECHNOLOGY STACK -->
+        <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
+            <div class="flex items-center space-x-3 mb-2">
+                <span class="w-8 h-8 rounded-lg bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-cubes"></i></span>
+                <h3 class="text-xl font-bold text-white">Stack Tecnológico</h3>
+            </div>
+            <p class="text-xs text-zinc-400">Herramientas de ingeniería utilizadas en el desarrollo del prototipo y modelo matemático.</p>
+
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 pt-2">
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
+                    <div class="w-12 h-12 rounded-xl bg-celeste-500/10 border border-celeste-500/20 flex items-center justify-center text-2xl text-celeste-400 group-hover:bg-celeste-500/20 transition-all">
+                        <i class="fa-brands fa-js"></i>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">JavaScript</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
+                    <div class="w-12 h-12 rounded-xl bg-celeste-500/10 border border-celeste-500/20 flex items-center justify-center text-2xl text-celeste-400 group-hover:bg-celeste-500/20 transition-all">
+                        <i class="fa-brands fa-python"></i>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Python</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
+                    <div class="w-12 h-12 rounded-xl bg-verde-500/10 border border-verde-500/20 flex items-center justify-center text-2xl text-verde-400 group-hover:bg-verde-500/20 transition-all">
+                        <i class="fa-brands fa-aws"></i>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">AWS IoT</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
+                    <div class="w-12 h-12 rounded-xl bg-verde-500/10 border border-verde-500/20 flex items-center justify-center text-2xl text-verde-400 group-hover:bg-verde-500/20 transition-all">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">ESP32</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
+                    <div class="w-12 h-12 rounded-xl bg-celeste-500/10 border border-celeste-500/20 flex items-center justify-center text-2xl text-celeste-400 group-hover:bg-celeste-500/20 transition-all">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Chart.js</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
+                    <div class="w-12 h-12 rounded-xl bg-verde-500/10 border border-verde-500/20 flex items-center justify-center text-2xl text-verde-400 group-hover:bg-verde-500/20 transition-all">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">KaTeX</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- METODOLOGÍA TIMELINE -->
+        <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
+            <div class="flex items-center space-x-3 mb-2">
+                <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-timeline"></i></span>
+                <h3 class="text-xl font-bold text-white">Metodología del Proyecto</h3>
+            </div>
+            <p class="text-xs text-zinc-400">Fases de desarrollo del sistema hídrico atmosférico-subterráneo.</p>
+
+            <div class="relative pl-12 space-y-8 pt-4" id="timelineContainer">
+                <div class="timeline-line" id="timelineLine"></div>
+
+                <div class="relative timeline-item">
+                    <div class="timeline-dot bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 absolute -left-12">1</div>
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/60 ml-4">
+                        <h4 class="text-sm font-bold text-white">Investigación y Modelado Matemático</h4>
+                        <p class="text-xs text-zinc-400 mt-1">Formulación de la EDO de balance hídrico y optimización mediante cálculo diferencial para determinar el punto de colapso del acuífero.</p>
+                    </div>
+                </div>
+
+                <div class="relative timeline-item">
+                    <div class="timeline-dot bg-verde-500/20 border border-verde-500/30 text-verde-400 absolute -left-12">2</div>
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/60 ml-4">
+                        <h4 class="text-sm font-bold text-white">Diseño del Sistema de Captación Atmosférica</h4>
+                        <p class="text-xs text-zinc-400 mt-1">Selección de materiales, cálculo de eficiencia de condensación y dimensionamiento del tanque de almacenamiento intermedio.</p>
+                    </div>
+                </div>
+
+                <div class="relative timeline-item">
+                    <div class="timeline-dot bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 absolute -left-12">3</div>
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/60 ml-4">
+                        <h4 class="text-sm font-bold text-white">Instrumentación IoT con ESP32</h4>
+                        <p class="text-xs text-zinc-400 mt-1">Implementación de sensores DHT22 y HC-SR04, lógica de histéresis para control de bomba de inyección y comunicación MQTT.</p>
+                    </div>
+                </div>
+
+                <div class="relative timeline-item">
+                    <div class="timeline-dot bg-verde-500/20 border border-verde-500/30 text-verde-400 absolute -left-12">4</div>
+                    <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/60 ml-4">
+                        <h4 class="text-sm font-bold text-white">Dashboard y Visualización en Tiempo Real</h4>
+                        <p class="text-xs text-zinc-400 mt-1">Desarrollo del panel interactivo con simulación dinámica, gráficos Chart.js y monitor serial para telemetría del acuífero.</p>
                     </div>
                 </div>
             </div>
@@ -1367,6 +1610,52 @@ void loop() {
         btnClearLogs.addEventListener('click', () => { terminalLog.innerHTML = ''; appendLog('Logs limpiados por el operador.'); });
 
         // ===== INIT =====
+        // ===== ANIMATED COUNTERS =====
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseFloat(el.dataset.count);
+                    const duration = 1500;
+                    const start = performance.now();
+                    const step = (now) => {
+                        const progress = Math.min((now - start) / duration, 1);
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        const current = eased * target;
+                        el.textContent = target % 1 === 0 ? Math.round(current) : current.toFixed(1);
+                        if (progress < 1) requestAnimationFrame(step);
+                        else el.textContent = target % 1 === 0 ? Math.round(target) : target.toFixed(1);
+                    };
+                    requestAnimationFrame(step);
+                    counterObserver.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
+
+        // ===== TIMELINE ANIMATION =====
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.getElementById('timelineLine').classList.add('visible');
+                    timelineObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        const timelineContainer = document.getElementById('timelineContainer');
+        if (timelineContainer) timelineObserver.observe(timelineContainer);
+
+        // ===== FLOATING DOWNLOAD BUTTON VISIBILITY =====
+        const floatDownload = document.getElementById('floatDownload');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 800) {
+                floatDownload.classList.add('show');
+            } else {
+                floatDownload.classList.remove('show');
+            }
+        });
+
+        // ===== INIT =====
         window.onload = function() {
             if (typeof renderMathInElement === 'function') {
                 renderMathInElement(document.body, {
@@ -1385,6 +1674,9 @@ void loop() {
             appendLog('Conectando a red WiFi local...');
             appendLog('MQTT conectado: /acuifero/telemetria', 'success');
             updateChart();
+            // Trigger counter animation if already visible
+            document.querySelectorAll('.stat-number').forEach(el => counterObserver.unobserve(el));
+            document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
         };
     </script>
 </body>
