@@ -65,17 +65,23 @@
             100% { background-position: 0% 50%; }
         }
         .animated-bg {
-            background: linear-gradient(-45deg, #09090b, #082f49, #0c4a6e, #09090b);
-            background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
+            background: linear-gradient(-45deg, #09090b, #0c1222, #082f49, #0c4a6e, #09090b);
+            background-size: 500% 500%;
+            animation: gradientBG 25s ease infinite;
         }
         .glow-verde { box-shadow: 0 0 15px rgba(16, 185, 129, 0.25); }
         .glow-agua { box-shadow: 0 0 15px rgba(14, 165, 233, 0.25); }
+        .glow-oceano { box-shadow: 0 0 15px rgba(6, 182, 212, 0.25); }
         .glass-panel {
             background: rgba(18, 18, 24, 0.65);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(63, 63, 70, 0.4);
+        }
+        .glass-panel-subtle {
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.015) 1px, transparent 0);
+            background-size: 32px 32px;
         }
         .img-overlay {
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
@@ -416,6 +422,47 @@
             color: #10b981;
         }
 
+        /* SECTION DIVIDERS */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px 0;
+            opacity: 0.6;
+        }
+        .section-divider .line {
+            height: 1px;
+            flex: 1;
+            max-width: 120px;
+        }
+        .section-divider .diamond {
+            width: 8px;
+            height: 8px;
+            transform: rotate(45deg);
+            border-radius: 1px;
+        }
+
+        /* SUbtle grid pattern for glass panels */
+        .panel-grid {
+            background-image:
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.02) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+
+        /* Background wave decoration */
+        .wave-divider {
+            position: relative;
+            height: 60px;
+            overflow: hidden;
+        }
+        .wave-divider svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         /* FORM STYLES */
         .form-input {
             transition: all 0.2s;
@@ -582,26 +629,39 @@
                 </div>
             </div>
         </div>
+        <!-- Wave Divider -->
+        <div class="wave-divider absolute bottom-0 left-0 w-full pointer-events-none opacity-30">
+            <svg viewBox="0 0 1440 60" preserveAspectRatio="none" class="h-full w-full">
+                <path d="M0,30 C360,60 720,0 1080,30 C1260,45 1350,35 1440,30 L1440,60 L0,60 Z" fill="url(#waveGrad)"/>
+                <defs>
+                    <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.3"/>
+                        <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.2"/>
+                        <stop offset="100%" stop-color="#10b981" stop-opacity="0.3"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
     </section>
 
     <!-- STATS COUNTERS BAR -->
     <section class="relative z-10 -mt-8 mb-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 reveal">
-                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
-                    <div class="text-2xl sm:text-3xl font-black text-agua-400 stat-number" data-count="18.84">0</div>
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300" style="border-left: 3px solid rgba(239, 68, 68, 0.4);">
+                    <div class="text-2xl sm:text-3xl font-black text-red-400 stat-number" data-count="18.84">0</div>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Años hasta colapso (sin tech)</p>
                 </div>
-                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300" style="border-left: 3px solid rgba(16, 185, 129, 0.4);">
                     <div class="text-2xl sm:text-3xl font-black text-verde-400 stat-number" data-count="57.5">0</div>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Vol. máximo natural (MMC)</p>
                 </div>
-                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
-                    <div class="text-2xl sm:text-3xl font-black text-agua-400 stat-number" data-count="100">0</div>
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300" style="border-left: 3px solid rgba(14, 165, 233, 0.4);">
+                    <div class="text-2xl sm:text-3xl font-black text-agua-500 stat-number" data-count="100">0</div>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Eficiencia de captación (%)</p>
                 </div>
-                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
-                    <div class="text-2xl sm:text-3xl font-black text-verde-400 stat-number" data-count="2">0</div>
+                <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300" style="border-left: 3px solid rgba(6, 182, 212, 0.4);">
+                    <div class="text-2xl sm:text-3xl font-black text-oceano-400 stat-number" data-count="2">0</div>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Investigadores del proyecto</p>
                 </div>
             </div>
@@ -609,7 +669,14 @@
     </section>
 
     <!-- Cuerpo del Artículo de Investigación -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 relative z-10">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12 relative z-10">
+
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-agua-500/40 to-transparent"></div>
+            <div class="diamond bg-agua-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-agua-500/40 to-transparent"></div>
+        </div>
 
         <!-- INTRODUCCIÓN Y PROBLEMÁTICA CON IMÁGENES -->
         <section id="introduccion" class="space-y-8 reveal">
@@ -674,8 +741,15 @@
             </div>
         </section>
 
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-verde-500/40 to-transparent"></div>
+            <div class="diamond bg-verde-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-verde-500/40 to-transparent"></div>
+        </div>
+
         <!-- DESARROLLO DEL PROYECTO: FORMULACIÓN MATEMÁTICA -->
-        <section id="modelo-matematico" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 relative overflow-hidden reveal">
+        <section id="modelo-matematico" class="glass-panel glass-panel-subtle rounded-3xl p-6 sm:p-8 space-y-8 relative overflow-hidden reveal">
             <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-verde-500/10 rounded-full blur-[80px] pointer-events-none"></div>
 
             <div class="max-w-3xl">
@@ -766,6 +840,13 @@
                 </svg>
             </div>
         </section>
+
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-oceano-500/40 to-transparent"></div>
+            <div class="diamond bg-oceano-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-oceano-500/40 to-transparent"></div>
+        </div>
 
         <!-- SECCIÓN DE RESULTADOS: SIMULADOR MATEMÁTICO INTERACTIVO -->
         <section id="simulador" class="grid grid-cols-1 lg:grid-cols-3 gap-8 reveal">
@@ -859,8 +940,15 @@
             </div>
         </section>
 
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-verde-500/40 to-transparent"></div>
+            <div class="diamond bg-verde-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-verde-500/40 to-transparent"></div>
+        </div>
+
         <!-- TECHNOLOGY STACK -->
-        <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
+        <section class="glass-panel glass-panel-subtle rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <div class="flex items-center space-x-3 mb-2">
                 <span class="w-8 h-8 rounded-lg bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-cubes"></i></span>
                 <h3 class="text-xl font-bold text-white">Stack Tecnológico</h3>
@@ -907,8 +995,15 @@
             </div>
         </section>
 
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-agua-500/40 to-transparent"></div>
+            <div class="diamond bg-agua-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-agua-500/40 to-transparent"></div>
+        </div>
+
         <!-- METODOLOGÍA TIMELINE -->
-        <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
+        <section class="glass-panel glass-panel-subtle rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <div class="flex items-center space-x-3 mb-2">
                 <span class="w-8 h-8 rounded-lg bg-agua-500/20 border border-agua-500/30 text-agua-400 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-timeline"></i></span>
                 <h3 class="text-xl font-bold text-white">Metodología del Proyecto</h3>
@@ -951,6 +1046,13 @@
                 </div>
             </div>
         </section>
+
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-oceano-500/40 to-transparent"></div>
+            <div class="diamond bg-oceano-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-oceano-500/40 to-transparent"></div>
+        </div>
 
         <!-- SECCIÓN DE HARDWARE & TELEMETRÍA IOT CON IMAGEN -->
         <section id="hardware" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 reveal">
@@ -1129,6 +1231,13 @@ void loop() {
             </details>
         </section>
 
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-agua-500/40 to-transparent"></div>
+            <div class="diamond bg-agua-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-agua-500/40 to-transparent"></div>
+        </div>
+
         <!-- DIAGRAMA TÉCNICO DE ESTRATIGRAFÍA GEOLÓGICA DE RECARGA -->
         <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 relative overflow-hidden reveal">
             <h3 class="text-xl font-bold text-white mb-6 flex items-center space-x-3">
@@ -1197,10 +1306,17 @@ void loop() {
             </div>
         </section>
 
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-verde-500/40 to-transparent"></div>
+            <div class="diamond bg-verde-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-verde-500/40 to-transparent"></div>
+        </div>
+
         <!-- PREGUNTAS FRECUENTES (FAQ) -->
         <section id="faq" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <h3 class="text-xl font-bold text-white flex items-center space-x-2">
-                <i class="fa-solid fa-circle-question text-agua-500"></i>
+                <i class="fa-solid fa-circle-question text-verde-500"></i>
                 <span>Preguntas Frecuentes (FAQ)</span>
             </h3>
 
@@ -1221,11 +1337,18 @@ void loop() {
             </div>
         </section>
 
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider">
+            <div class="line bg-gradient-to-r from-transparent via-oceano-500/40 to-transparent"></div>
+            <div class="diamond bg-oceano-500"></div>
+            <div class="line bg-gradient-to-r from-transparent via-oceano-500/40 to-transparent"></div>
+        </div>
+
         <!-- CONTACTO / FORMULARIO -->
         <section id="contacto" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <div class="max-w-2xl">
                 <h3 class="text-xl font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-envelope text-agua-500"></i>
+                    <i class="fa-solid fa-envelope text-oceano-500"></i>
                     <span>Contacto e Información Académica</span>
                 </h3>
                 <p class="text-xs text-zinc-400 mt-1">¿Tienes dudas sobre los algoritmos de optimización o el firmware de la estación? Ponte en contacto con el equipo investigador de la Universidad Continental.</p>
