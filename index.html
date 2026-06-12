@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto de Investigación: Sistema Hídrico Atmosférico-Subterráneo - Universidad Continental</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX para representación matemática de calidad editorial -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        verde: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                            950: '#022c11',
+                        },
+                        celeste: {
+                            50: '#ecfeff',
+                            100: '#cffafe',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0891b2',
+                            700: '#0e7490',
+                            900: '#164e63',
+                            950: '#083344',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Gradiente animado dinámico para el fondo */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-bg {
+            background: linear-gradient(-45deg, #09090b, #022c11, #083344, #09090b);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+        }
+        
+        .glow-verde { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); }
+        .glow-celeste { box-shadow: 0 0 15px rgba(6, 182, 212, 0.25); }
+        
+        .glass-panel {
+            background: rgba(18, 18, 24, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(63, 63, 70, 0.4);
+        }
+
+        /* Estilo para las imágenes integradas */
+        .img-overlay {
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+        }
+    </style>
+</head>
+<body class="animated-bg text-zinc-100 font-sans min-h-screen selection:bg-celeste-500 selection:text-zinc-950 relative">
+
+    <!-- Canvas para el fondo interactivo (Partículas de agua) -->
+    <canvas id="particleCanvas" class="fixed inset-0 z-0 pointer-events-none opacity-60"></canvas>
+
+    <!-- Encabezado Principal / Navbar -->
+    <header class="border-b border-zinc-800/50 bg-zinc-950/70 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-verde-600 to-celeste-500 p-0.5 glow-celeste">
+                    <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-droplet text-transparent bg-gradient-to-r from-verde-400 to-celeste-400 bg-clip-text text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-extrabold tracking-tight bg-gradient-to-r from-verde-400 to-celeste-400 bg-clip-text text-transparent">
+                        UNIVERSIDAD CONTINENTAL
+                    </h1>
+                    <p class="text-[10px] sm:text-xs text-zinc-400 font-medium">Facultad de Ingeniería • Proyecto Hidrológico</p>
+                </div>
+            </div>
+            
+            <!-- Links de Navegación del Paper -->
+            <div class="hidden lg:flex items-center space-x-6">
+                <a href="#introduccion" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Contexto</a>
+                <a href="#modelo-matematico" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Desarrollo Matemático</a>
+                <a href="#simulador" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Simulador</a>
+                <a href="#hardware" class="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition">Hardware IoT</a>
+                <span class="h-4 w-px bg-zinc-700"></span>
+                <span class="text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full font-mono">
+                    UTP - 2026
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Héroe / Cabecera de Proyecto Universitario -->
+    <section class="relative overflow-hidden border-b border-zinc-900/50 py-20 lg:py-32 z-10">
+        <!-- Imagen de fondo del hero (Naturaleza/Agua) -->
+        <div class="absolute inset-0 z-[-1] opacity-20 img-overlay">
+            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920" alt="" class="w-full h-full object-cover">
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative space-y-8">
+            <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Universidad Continental • Escuela Académico Profesional de Ingeniería</span>
+            </div>
+
+            <div class="space-y-4 max-w-5xl">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight drop-shadow-lg">
+                    Optimización de la Recarga de Acuíferos mediante Captación Atmosférica usando Cálculo Diferencial
+                </h1>
+                <p class="text-sm sm:text-base text-zinc-300 font-semibold uppercase tracking-widest bg-zinc-950/50 inline-block px-2 py-1 rounded backdrop-blur-sm">
+                    Modelado, Simulación en Tiempo Real e Instrumentación IoT con Microcontrolador ESP32
+                </p>
+            </div>
+
+            <!-- Integrantes & Roles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center font-bold text-sm">JS</div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Juan Gustavo Segura Villegas</h4>
+                        <p class="text-xs text-zinc-400">Firmware ESP32 & IoT Integración</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4">
+                    <div class="w-10 h-10 rounded-xl bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center font-bold text-sm">CC</div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white">Ccanqqueri Saraya Paul Eduardo</h4>
+                        <p class="text-xs text-zinc-400">Modelación Matemática & Hidrología</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 justify-between">
+                    <div>
+                        <h4 class="text-xs uppercase tracking-wider text-zinc-400 font-bold">Proyecto Integrador</h4>
+                        <p class="text-xs font-bold text-white">Cálculo Diferencial aplicado a Ingeniería</p>
+                        <p class="text-[10px] text-zinc-400">Sede Central • Sometido para Evaluación</p>
+                    </div>
+                    <i class="fa-solid fa-microchip text-2xl text-verde-500/30"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cuerpo del Artículo de Investigación -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 relative z-10">
+
+        <!-- INTRODUCCIÓN Y PROBLEMÁTICA CON IMÁGENES -->
+        <section id="introduccion" class="space-y-8">
+            <div class="space-y-4 max-w-4xl">
+                <h3 class="text-2xl font-bold text-white flex items-center space-x-3">
+                    <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold">1</span>
+                    <span>Introducción y Planteamiento del Problema</span>
+                </h3>
+                <p class="text-zinc-300 text-sm sm:text-base leading-relaxed text-justify">
+                    En las últimas décadas, el cambio climático y el incremento demográfico acelerado han provocado un estrés hídrico sin precedentes. La investigación propone un sistema dinámico alternativo: la captación de agua directamente de la humedad atmosférica acoplado a un sistema controlado de inyección para reabastecer las capas freáticas antes de su colapso total.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Tarjeta 1: Glaciares -->
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group">
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1548671846-9d5c4125b2a4?auto=format&fit=crop&q=80&w=600" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent"></div>
+                    </div>
+                    <div class="p-6 -mt-8 relative z-10 space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-red-500/30 flex items-center justify-center text-red-400 text-lg mb-3">
+                            <i class="fa-solid fa-mountain"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white">Retracción Glaciar</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Los glaciares andinos han disminuido hasta un 60%, comprometiendo severamente el deshielo estacional natural, principal fuente de recarga de los acuíferos.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: Demanda Urbana -->
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group">
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=600" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent"></div>
+                    </div>
+                    <div class="p-6 -mt-8 relative z-10 space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg mb-3">
+                            <i class="fa-solid fa-city"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white">Impermeabilización Urbana</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            La acelerada expansión pavimenta los suelos, impidiendo los procesos naturales de percolación de aguas pluviales e incrementando la demanda.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3: Sequía -->
+                <div class="glass-panel rounded-2xl overflow-hidden flex flex-col group">
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=600" alt="" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent"></div>
+                    </div>
+                    <div class="p-6 -mt-8 relative z-10 space-y-2">
+                        <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-verde-500/30 flex items-center justify-center text-verde-400 text-lg mb-3">
+                            <i class="fa-solid fa-droplet-slash"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white">Estrés Hídrico</h4>
+                        <p class="text-xs text-zinc-400 leading-relaxed">
+                            Bajo un contexto de demanda hídrica exponencial y recarga natural disminuida, las capas freáticas se enfrentan a un colapso inminente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DESARROLLO DEL PROYECTO: FORMULACIÓN MATEMÁTICA -->
+        <section id="modelo-matematico" class="glass-panel rounded-3xl p-8 space-y-8 relative overflow-hidden">
+            <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-verde-500/10 rounded-full blur-[80px] pointer-events-none"></div>
+            
+            <div class="max-w-3xl">
+                <h3 class="text-2xl font-extrabold text-white flex items-center space-x-3">
+                    <span class="w-8 h-8 rounded-lg bg-verde-500/20 border border-verde-500/30 text-verde-400 flex items-center justify-center text-sm font-bold">2</span>
+                    <span>Desarrollo: Formulación y Ecuación Diferencial</span>
+                </h3>
+                <p class="text-zinc-300 text-sm mt-2 leading-relaxed">
+                    Estructuración científica del balance volumétrico en base a tasas de cambio continuas.
+                </p>
+            </div>
+
+            <!-- Ecuaciones e Integrales -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Modelo base hídrico -->
+                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4">
+                    <h4 class="text-sm font-bold text-zinc-100 uppercase tracking-wider border-b border-zinc-800 pb-2">
+                        A. Definición del Balance Dinámico (\(I(t) = 0\))
+                    </h4>
+                    <p class="text-xs text-zinc-300 leading-relaxed text-justify">
+                        El balance de masas en el acuífero se modela mediante la siguiente Ecuación Diferencial Ordinaria (EDO):
+                        $$\frac{dV}{dt} = R - C(t) + I(t)$$
+                    </p>
+                    <p class="text-xs text-zinc-300 leading-relaxed text-justify">
+                        Asumiendo una recarga natural constante $R = 3\text{ MMC/año}$, un consumo creciente $C(t) = 0.60t$, y sin inyección asistida de agua:
+                        $$\frac{dV}{dt} = 3 - 0.60t$$
+                    </p>
+                    <p class="text-xs text-zinc-300 leading-relaxed text-justify">
+                        Para hallar la ecuación de volumen acumulado $V(t)$, integramos de manera indefinida considerando un volumen inicial de reserva $V(0) = 50\text{ MMC}$:
+                        $$V(t) = \int (3 - 0.60t) \, dt \implies V(t) = -0.30t^2 + 3t + 50$$
+                    </p>
+                </div>
+
+                <!-- Optimización mediante primera derivada -->
+                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4">
+                    <h4 class="text-sm font-bold text-zinc-100 uppercase tracking-wider border-b border-zinc-800 pb-2">
+                        B. Búsqueda de Punto de Inflexión y Optimización
+                    </h4>
+                    <p class="text-xs text-zinc-300 leading-relaxed text-justify">
+                        Buscamos el instante de tiempo $t$ donde el volumen acumulado en el acuífero sea máximo. Derivamos la función $V(t)$ e igualamos a $0$:
+                        $$V'(t) = \frac{dV}{dt} = 3 - 0.60t = 0 \implies t = 5\text{ años}$$
+                    </p>
+                    <p class="text-xs text-zinc-300 leading-relaxed text-justify">
+                        Evaluamos $t = 5$ para estimar el volumen máximo de reserva obtenido de forma natural:
+                        $$V(5) = -0.30(5)^2 + 3(5) + 50 = 57.5\text{ MMC}$$
+                    </p>
+                    <p class="text-xs text-zinc-300 leading-relaxed text-justify">
+                        Al resolver la raíz real para la condición de colapso extremo ($V(t) = 0$), se establece que a los <strong>18.84 años</strong> las reservas del acuífero quedarán totalmente extintas si no se aplica la inyección de recarga: $I(t) = 0.60t - 3$. De aplicarse, se logra la condición ideal $\frac{dV}{dt} = 0$.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Esquema Gráfico del Modelo Hídrico -->
+            <div class="p-4 rounded-2xl border border-zinc-800 bg-zinc-950/80 mt-4 shadow-inner">
+                <p class="text-xs font-bold text-celeste-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-compass-drafting mr-2"></i>Figura 1: Esquema Vectorial de Modelación Matemática</p>
+                
+                <svg viewBox="0 0 800 220" class="w-full h-auto bg-zinc-900/30 rounded-xl p-2 border border-zinc-800/50">
+                    <line x1="100" y1="20" x2="100" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" />
+                    <line x1="400" y1="20" x2="400" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" />
+                    <line x1="700" y1="20" x2="700" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" stroke-width="2" />
+                    
+                    <path d="M 50,50 L 250,50" fill="none" stroke="#22c55e" stroke-width="3" marker-end="url(#arrow-green)" />
+                    <text x="70" y="40" fill="#4ade80" font-family="monospace" font-size="12" font-weight="bold">Recarga Natural R = 3 MMC/año</text>
+                    
+                    <path d="M 400,160 L 600,160" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)" />
+                    <text x="410" y="150" fill="#f87171" font-family="monospace" font-size="12" font-weight="bold">Consumo Creciente C(t) = 0.60·t</text>
+
+                    <path d="M 50,110 L 250,110" fill="none" stroke="#06b6d4" stroke-width="3" stroke-dasharray="2,2" marker-end="url(#arrow-cyan)" />
+                    <text x="70" y="100" fill="#22d3ee" font-family="monospace" font-size="12" font-weight="bold">Inyección Artificial I(t) = 0.60·t - 3</text>
+
+                    <rect x="280" y="35" width="120" height="150" rx="10" fill="#09090b" stroke="#52525b" stroke-width="2" />
+                    <ellipse cx="340" cy="110" rx="30" ry="15" fill="#083344" opacity="0.8"/>
+                    <text x="340" y="105" fill="#ffffff" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">V(t)</text>
+                    <text x="340" y="125" fill="#a1a1aa" font-family="sans-serif" font-size="10" text-anchor="middle">Acuífero</text>
+                    <text x="340" y="140" fill="#4ade80" font-family="sans-serif" font-size="9" text-anchor="middle">V0 = 50 MMC</text>
+
+                    <rect x="630" y="70" width="150" height="80" rx="6" fill="#052e16" stroke="#22c55e" stroke-width="1.5" />
+                    <text x="705" y="95" fill="#a7f3d0" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">ESTADO ESTABLE</text>
+                    <text x="705" y="125" fill="#4ade80" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">dV/dt = 0</text>
+                    
+                    <defs>
+                        <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#22c55e" />
+                        </marker>
+                        <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+                        </marker>
+                        <marker id="arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#06b6d4" />
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE RESULTADOS: SIMULADOR MATEMÁTICO INTERACTIVO -->
+        <section id="simulador" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="glass-panel rounded-3xl p-6 space-y-6 flex flex-col justify-between">
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-1 flex items-center space-x-2">
+                        <i class="fa-solid fa-sliders text-celeste-400"></i>
+                        <span>Simulación y Variables</span>
+                    </h4>
+                    <p class="text-xs text-zinc-400">Modifica los parámetros hidrológicos del modelo para recalcular la curva dinámicamente.</p>
+                </div>
+
+                <div class="space-y-4 flex-grow my-4">
+                    <!-- Sliders -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-300">Volumen Inicial \(V_0\)</span>
+                            <span id="v0Val" class="font-bold text-celeste-400 font-mono">50 MMC</span>
+                        </div>
+                        <input type="range" id="v0Slider" min="20" max="100" value="50" step="5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-300">Recarga Natural \(R\)</span>
+                            <span id="rVal" class="font-bold text-celeste-400 font-mono">3.0 MMC/año</span>
+                        </div>
+                        <input type="range" id="rSlider" min="0" max="10" value="3" step="0.5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-300">Factor de Consumo \(c\)</span>
+                            <span id="cVal" class="font-bold text-celeste-400 font-mono">0.60</span>
+                        </div>
+                        <input type="range" id="cSlider" min="0.1" max="1.5" value="0.6" step="0.05" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                    </div>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-zinc-300">Crecimiento Demográfico (\(k_2\))</span>
+                            <span id="k2Val" class="font-bold text-celeste-400 font-mono">0.05</span>
+                        </div>
+                        <input type="range" id="k2Slider" min="0" max="0.3" value="0.05" step="0.01" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800/80 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-zinc-200">Activar Inyección</p>
+                            <p class="text-[9px] text-zinc-400">\(I(t) = c \cdot t - R\)</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="techToggle" checked class="sr-only peer">
+                            <div class="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-400 after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-verde-500 peer-checked:after:bg-zinc-950"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-zinc-800/60 flex items-center justify-between text-xs">
+                    <span class="text-zinc-400">Extinción Teórica (Sin Tech):</span>
+                    <span id="colapseYear" class="font-bold text-red-400 font-mono">18.8 años</span>
+                </div>
+            </div>
+
+            <!-- Gráfico Interactivo de Resultados -->
+            <div class="lg:col-span-2 glass-panel rounded-3xl p-6 flex flex-col justify-between space-y-4">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-area text-verde-400"></i>
+                        <span>Resultados: Simulación del Reservorio Subterráneo \(V(t)\)</span>
+                    </h4>
+                    <span class="text-xs text-zinc-400 font-mono">Proyección Temporal (Años)</span>
+                </div>
+
+                <div class="relative h-80 sm:h-96">
+                    <canvas id="simulationChart"></canvas>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800">
+                        <p class="text-[9px] text-zinc-400">Máximo Natural</p>
+                        <p id="vMaxText" class="text-xs font-bold text-celeste-400 font-mono">57.50 MMC</p>
+                    </div>
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800">
+                        <p class="text-[9px] text-zinc-400">Año Pico</p>
+                        <p id="tMaxText" class="text-xs font-bold text-verde-400 font-mono">Año 5.0</p>
+                    </div>
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800">
+                        <p class="text-[9px] text-zinc-400">Estado Dinámico</p>
+                        <p id="stabilityStatus" class="text-xs font-bold text-emerald-400 font-mono">Estable</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN DE HARDWARE & TELEMETRÍA IOT CON IMAGEN -->
+        <section id="hardware" class="glass-panel rounded-3xl p-8 space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-xl font-bold">3</div>
+                    <div>
+                        <h3 class="text-xl font-extrabold text-white">Planta IoT de Inyección Automatizada</h3>
+                        <p class="text-xs text-zinc-400 mt-1">Simulación física y código firmware C++ del Microcontrolador ESP32.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2.5 bg-zinc-900/80 px-3 py-1.5 rounded-full border border-zinc-800 text-xs">
+                    <span class="w-2 h-2 bg-verde-500 rounded-full animate-pulse glow-verde"></span>
+                    <span class="font-bold font-mono text-zinc-300">ESP32: ON-LINE</span>
+                </div>
+            </div>
+
+            <!-- Imagen del Hardware -->
+            <div class="w-full h-48 sm:h-64 rounded-2xl overflow-hidden relative border border-zinc-800/80">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-zinc-950/40"></div>
+                <div class="absolute bottom-4 left-4">
+                    <span class="bg-zinc-950/80 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded text-xs font-mono font-bold backdrop-blur">
+                        <i class="fa-solid fa-microchip mr-1"></i> Microcontrolador ESP32-WROOM-32
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Parámetros Ambientales (DHT22) -->
+                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 space-y-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-cloud-rain text-celeste-400"></i>
+                            <span>Simulador de Entorno (DHT22)</span>
+                        </h4>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-zinc-300">Humedad Relativa (%)</span>
+                                <span id="humDHTVal" class="font-bold text-celeste-400 font-mono">75%</span>
+                            </div>
+                            <input type="range" id="humDHTSlider" min="30" max="100" value="75" step="1" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-zinc-300">Temperatura Ambiente (°C)</span>
+                                <span id="tempDHTVal" class="font-bold text-verde-400 font-mono">25°C</span>
+                            </div>
+                            <input type="range" id="tempDHTSlider" min="10" max="45" value="25" step="1" class="w-full accent-verde-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/60 space-y-2.5 text-xs">
+                        <div class="flex justify-between">
+                            <span class="text-zinc-400">Generación Condensador:</span>
+                            <span id="condensationRate" class="font-bold text-celeste-400 font-mono">0.45 L/min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actuadores (HC-SR04) -->
+                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 flex flex-col justify-between space-y-6">
+                    <div>
+                        <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-gauge text-verde-400"></i>
+                            <span>Tanque Intermedio & Bomba</span>
+                        </h4>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 flex flex-col items-center justify-center space-y-2 relative overflow-hidden">
+                            <span class="text-[9px] text-zinc-500 uppercase font-bold text-center">Nivel del Tanque</span>
+                            <div class="w-14 h-24 border border-zinc-800 rounded-lg relative overflow-hidden bg-zinc-900 flex flex-col justify-end">
+                                <div id="tankLiquid" class="bg-gradient-to-t from-celeste-600 to-celeste-400 w-full transition-all duration-300" style="height: 45%;"></div>
+                                <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white font-mono" id="tankLevelPctText">45%</div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 flex flex-col items-center justify-center space-y-3">
+                            <span class="text-[9px] text-zinc-500 uppercase font-bold text-center">Actuador</span>
+                            <div id="pumpIconContainer" class="w-14 h-14 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-lg transition-all">
+                                <i id="pumpIcon" class="fa-solid fa-rotate text-zinc-600"></i>
+                            </div>
+                            <div class="text-center space-y-1">
+                                <span id="pumpStatusBadge" class="text-[10px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800">STANDBY</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitor Serial -->
+                <div class="p-6 rounded-2xl bg-zinc-950 border border-zinc-900 flex flex-col justify-between h-80 lg:h-auto">
+                    <div class="flex justify-between items-center pb-2 border-b border-zinc-900">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-verde-500"></span>
+                            <span class="text-[10px] font-bold font-mono text-zinc-400">Terminal ESP32</span>
+                        </div>
+                        <span class="text-[9px] font-mono text-zinc-600">115200 baud</span>
+                    </div>
+
+                    <div id="terminalLog" class="flex-grow my-3 p-3 bg-zinc-900/80 rounded-xl border border-zinc-800/50 overflow-y-auto text-[10px] font-mono text-emerald-400 space-y-1">
+                        <!-- Logs dinámicos -->
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button id="btnAutoInject" class="flex-grow py-2 px-3 rounded-lg bg-celeste-600 hover:bg-celeste-500 text-zinc-950 font-bold text-xs transition duration-150">
+                            Fuerzo Manual
+                        </button>
+                        <button id="btnClearLogs" class="py-2 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 transition">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Código C++ Ocultable -->
+            <details class="bg-zinc-900/50 border border-zinc-800/80 rounded-2xl cursor-pointer group">
+                <summary class="p-4 text-sm font-bold text-white flex items-center justify-between outline-none">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-code text-verde-400"></i>
+                        <span>Ver Código C++ del Firmware ESP32</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-zinc-500 group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <div class="p-6 pt-0 border-t border-zinc-800/50 mt-2">
+                    <pre class="bg-zinc-950 border border-zinc-800/80 rounded-xl p-4 text-xs text-zinc-300 font-mono overflow-x-auto">
+<code>#include &lt;DHT.h&gt;
+
+#define DHTPIN 4
+#define DHTTYPE DHT22
+#define PIN_TRIG 12
+#define PIN_ECHO 14
+#define PIN_BOMBA 27
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(115200);
+  dht.begin();
+  pinMode(PIN_TRIG, OUTPUT);
+  pinMode(PIN_ECHO, INPUT);
+  pinMode(PIN_BOMBA, OUTPUT);
+  digitalWrite(PIN_BOMBA, LOW); // Bomba inicialmente apagada
+  Serial.println("--- SISTEMA HÍDRICO INICIALIZADO ---");
+}
+
+void loop() {
+  float humedad = dht.readHumidity();
+  float temperatura = dht.readTemperature();
+
+  // Lectura HC-SR04 y Lógica de Histéresis
+  // ... (código resumido para visualización) ...
+  if (porcentaje_llenado >= 70.0) {
+    digitalWrite(PIN_BOMBA, HIGH); 
+  } else if (porcentaje_llenado <= 15.0) {
+    digitalWrite(PIN_BOMBA, LOW);  
+  }
+  
+  delay(1500);
+}</code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- DIAGRAMA TÉCNICO DE ESTRATIGRAFÍA GEOLÓGICA DE RECARGA -->
+        <section class="glass-panel rounded-3xl p-8 space-y-8 relative overflow-hidden">
+            <h3 class="text-xl font-bold text-white mb-6 flex items-center space-x-3">
+                <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold">4</span>
+                <span>Diagrama Físico de Estratigrafía de Recarga del Acuífero</span>
+            </h3>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed text-justify">
+                        La inyección controlada en el subsuelo requiere atravesar un filtro natural o simulado mecánicamente de capas de granulometría variable para prevenir la colmatación y asegurar que el agua procedente del condensador no altere la turbidez de la napa freática.
+                    </p>
+                    <ul class="space-y-2 text-xs text-zinc-400 list-inside list-disc">
+                        <li><strong class="text-amber-500">Filtro de Arena Silícea (E1):</strong> Retención primaria de partículas sólidas en suspensión.</li>
+                        <li><strong class="text-zinc-400">Lecho de Grava Fina (E2):</strong> Ofrece estabilidad estructural y distribuye los hilos de flujo de agua.</li>
+                        <li><strong class="text-emerald-500">Filtro de Intercambio de Arcillas/Zeolitas (E3):</strong> Absorción iónica elemental de impurezas procedentes de metales.</li>
+                        <li><strong class="text-celeste-400">Capa de Saturación Subterránea (Acuífero):</strong> Almacenamiento hídrico neto monitorizado por ultrasonido.</li>
+                    </ul>
+                </div>
+
+                <div class="p-2 bg-zinc-900/60 rounded-2xl border border-zinc-800 shadow-inner">
+                    <p class="text-xs font-bold text-verde-400 mb-2 uppercase tracking-widest text-center"><i class="fa-solid fa-layer-group mr-2"></i>Figura 2: Corte Perfil Estratigráfico de Filtración</p>
+                    
+                    <svg viewBox="0 0 500 350" class="w-full h-auto rounded-xl">
+                        <path d="M 250,5 L 250,45" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="3,3" marker-end="url(#aquifer-arrow)" />
+                        <rect x="180" y="5" width="140" height="20" rx="4" fill="#083344" stroke="#0891b2" stroke-width="1" />
+                        <text x="250" y="18" fill="#ffffff" font-family="sans-serif" font-size="9" text-anchor="middle">Inyección Controlada</text>
+
+                        <!-- Capas -->
+                        <rect x="50" y="50" width="400" height="60" fill="#fef08a" opacity="0.6" stroke="#ca8a04" stroke-width="1" />
+                        <circle cx="70" cy="65" r="1" fill="#ca8a04" /><circle cx="120" cy="80" r="1.5" fill="#ca8a04" />
+                        <text x="250" y="85" fill="#854d0e" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Filtro de Arena Fina (E1)</text>
+
+                        <rect x="50" y="110" width="400" height="70" fill="#cbd5e1" opacity="0.7" stroke="#475569" stroke-width="1" />
+                        <path d="M 80,130 Q 95,120 100,135 Z" fill="#94a3b8" stroke="#475569" />
+                        <path d="M 200,140 Q 215,130 230,150 Z" fill="#64748b" stroke="#475569" />
+                        <text x="250" y="150" fill="#1e293b" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Lecho de Grava Porosa (E2)</text>
+
+                        <rect x="50" y="180" width="400" height="60" fill="#bbf7d0" opacity="0.5" stroke="#16a34a" stroke-width="1" />
+                        <text x="250" y="215" fill="#14532d" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">Filtro de Arcilla Activa (E3)</text>
+
+                        <rect x="50" y="240" width="400" height="90" fill="#cffafe" opacity="0.7" stroke="#0891b2" stroke-width="1.5" />
+                        <path d="M 100,270 Q 115,260 130,270 T 160,270" fill="none" stroke="#0891b2" stroke-width="1.5" />
+                        <line x1="390" y1="200" x2="390" y2="300" stroke="#0891b2" stroke-width="3" />
+                        <circle cx="390" cy="300" r="6" fill="#ef4444" />
+                        <text x="250" y="295" fill="#164e63" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">Acuífero Subterráneo (V)</text>
+
+                        <defs>
+                            <marker id="aquifer-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#06b6d4" />
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- PREGUNTAS FRECUENTES (FAQ) -->
+        <section id="faq" class="glass-panel rounded-3xl p-8 space-y-6">
+            <h3 class="text-xl font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-question-circle text-celeste-500"></i>
+                <span>Preguntas Frecuentes (FAQ)</span>
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-bold text-verde-400">¿Cuál es el costo aproximado de implementación de la estación IoT?</h4>
+                    <p class="text-xs text-zinc-400 text-justify">
+                        El prototipo de laboratorio tiene un coste aproximado de $120 USD. Un sistema real a escala comunitaria requiere infraestructura de mayor envergadura cuyo coste de inversión se estima en $5,500 USD con un mantenimiento anual mínimo.
+                    </p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="text-sm font-bold text-verde-400">¿Cuánto tiempo toma estabilizar las capas freáticas?</h4>
+                    <p class="text-xs text-zinc-400 text-justify">
+                        Analíticamente, la estabilización es inmediata tras activar la retroalimentación de inyección: el balance neto $\frac{dV}{dt}$ pasa a $0$. Físicamente, el proceso de infiltración toma entre 48 y 72 horas para alcanzar homogeneidad hidrostática en capas arenosas de porosidad media.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACTO / FORMULARIO -->
+        <section id="contacto" class="glass-panel rounded-3xl p-8 space-y-6">
+            <div class="max-w-2xl">
+                <h3 class="text-xl font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-envelope text-celeste-500"></i>
+                    <span>Contacto e Información Académica</span>
+                </h3>
+                <p class="text-xs text-zinc-400 mt-1">¿Tienes dudas sobre los algoritmos de optimización o el firmware de la estación? Ponte en contacto con el equipo investigador de la Universidad Continental.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <form class="space-y-4" onsubmit="event.preventDefault();">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] uppercase font-bold text-zinc-400">Nombre</label>
+                            <input type="text" placeholder="Tu nombre" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs focus:outline-none focus:border-celeste-500 text-white">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] uppercase font-bold text-zinc-400">Correo Institucional</label>
+                            <input type="email" placeholder="estudiante@continental.edu.pe" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs focus:outline-none focus:border-celeste-500 text-white">
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] uppercase font-bold text-zinc-400">Mensaje</label>
+                        <textarea placeholder="Consulta técnica o sugerencias..." rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs focus:outline-none focus:border-celeste-500 text-white"></textarea>
+                    </div>
+                    <button class="w-full py-2 bg-gradient-to-r from-verde-600 to-celeste-600 hover:from-verde-500 hover:to-celeste-500 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition">Enviar Mensaje</button>
+                </form>
+
+                <div class="space-y-4 flex flex-col justify-between text-xs text-zinc-400">
+                    <div class="space-y-3">
+                        <p class="flex items-center space-x-2">
+                            <i class="fa-solid fa-envelope text-celeste-500"></i>
+                            <span>soporte.hidro@continental.edu.pe</span>
+                        </p>
+                        <p class="flex items-center space-x-2">
+                            <i class="fa-brands fa-whatsapp text-verde-400"></i>
+                            <span>+51 987 654 321</span>
+                        </p>
+                        <p class="flex items-center space-x-2">
+                            <i class="fa-solid fa-location-dot text-celeste-500"></i>
+                            <span>Av. San Carlos 1980, Huancayo - Perú</span>
+                        </p>
+                    </div>
+                    <div class="pt-4 border-t border-zinc-800/80 flex space-x-4 text-sm text-zinc-500">
+                        <a href="#" class="hover:text-celeste-400"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" class="hover:text-celeste-400"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="hover:text-celeste-400"><i class="fa-solid fa-graduation-cap"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-950 border-t border-zinc-900 py-12 mt-12 text-zinc-500 text-xs relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-verde-500 to-celeste-500 p-0.5">
+                    <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-droplet text-celeste-400"></i>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-xs font-bold text-white tracking-tight">SISTEMA HÍDRICO ATMOSFÉRICO-SUBTERRÁNEO DINÁMICO</h2>
+                    <p class="text-[10px] text-zinc-600">Proyecto de Cálculo Diferencial. Universidad Continental, 2026.</p>
+                </div>
+            </div>
+            
+            <div class="text-center md:text-right space-y-1">
+                <p>&copy; 2026. Todos los derechos reservados.</p>
+                <p class="text-[10px] text-zinc-600">Desarrollado por Juan Gustavo Segura Villegas & Paul Eduardo Ccanqqueri Saraya.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script de Simulación e IoT y Animación Canvas -->
+    <script>
+        // --- 1. FONDO ANIMADO DE PARTÍCULAS (AGUA) ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctxCanvas = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedY = Math.random() * -0.5 - 0.1; // Flotando hacia arriba (evaporación)
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.color = Math.random() > 0.5 ? 'rgba(34, 197, 94, 0.4)' : 'rgba(6, 182, 212, 0.4)'; // Verde o Celeste
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+
+                // Interacción sutil con el ratón
+                let dx = mouseX - this.x;
+                let dy = mouseY - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 100) {
+                    this.x -= dx * 0.01;
+                    this.y -= dy * 0.01;
+                }
+
+                // Reposicionamiento si sale de la pantalla
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.speedX *= -1;
+                }
+            }
+            draw() {
+                ctxCanvas.fillStyle = this.color;
+                ctxCanvas.beginPath();
+                ctxCanvas.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctxCanvas.fill();
+            }
+        }
+
+        function initParticles() {
+            resizeCanvas();
+            particles = [];
+            let particleCount = Math.floor(window.innerWidth / 15); // Cantidad dependiente del ancho
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctxCanvas.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // --- 2. INSTANCIACIÓN DE VARIABLES DE SIMULACIÓN HÍDRICA ---
+        let v0 = 50; 
+        let R = 3; 
+        let c = 0.60; 
+        let k2 = 0.05; 
+        let techActive = true; 
+
+        // Parámetros de Simulación IoT
+        let humidity = 75; 
+        let temperature = 25; 
+        let tankLevel = 45; // en % (rango 0-100)
+        let totalRecharged = 0; // litros acumulados
+        let pumpActive = false; 
+
+        // Elementos DOM del Simulador Matemático
+        const v0Slider = document.getElementById('v0Slider');
+        const v0Val = document.getElementById('v0Val');
+        const rSlider = document.getElementById('rSlider');
+        const rVal = document.getElementById('rVal');
+        const cSlider = document.getElementById('cSlider');
+        const cVal = document.getElementById('cVal');
+        const k2Slider = document.getElementById('k2Slider');
+        const k2Val = document.getElementById('k2Val');
+        const techToggle = document.getElementById('techToggle');
+        const colapseYearText = document.getElementById('colapseYear');
+        const vMaxText = document.getElementById('vMaxText');
+        const tMaxText = document.getElementById('tMaxText');
+        const stabilityStatusText = document.getElementById('stabilityStatus');
+
+        // Elementos DOM del Simulador IoT
+        const humDHTSlider = document.getElementById('humDHTSlider');
+        const humDHTVal = document.getElementById('humDHTVal');
+        const tempDHTSlider = document.getElementById('tempDHTSlider');
+        const tempDHTVal = document.getElementById('tempDHTVal');
+        const condensationRateText = document.getElementById('condensationRate');
+        const tankLiquid = document.getElementById('tankLiquid');
+        const tankLevelPctText = document.getElementById('tankLevelPctText');
+        const tankVolumeText = document.getElementById('tankVolumeText');
+        const pumpIcon = document.getElementById('pumpIcon');
+        const pumpIconContainer = document.getElementById('pumpIconContainer');
+        const pumpStatusBadge = document.getElementById('pumpStatusBadge');
+        const rechargedVolText = document.getElementById('rechargedVolText');
+        const terminalLog = document.getElementById('terminalLog');
+        const btnAutoInject = document.getElementById('btnAutoInject');
+        const btnClearLogs = document.getElementById('btnClearLogs');
+
+        // --- 3. CHART JS SETUP ---
+        const ctx = document.getElementById('simulationChart').getContext('2d');
+        let simulationChart;
+
+        function buildData() {
+            const labels = [];
+            const dataSinTech = [];
+            const dataConTech = [];
+            const dataPopGrowth = [];
+
+            let colapseT = null;
+
+            for (let t = 0; t <= 25; t += 0.5) {
+                labels.push(`Año ${t.toFixed(1)}`);
+
+                // Modelo base Sin Tecnología
+                let valSinTech = -0.5 * c * t * t + R * t + v0;
+                dataSinTech.push(valSinTech > 0 ? valSinTech : 0);
+
+                if (valSinTech <= 0 && colapseT === null) {
+                    colapseT = t;
+                }
+
+                // Modelo con Tecnología (Compensación exacta)
+                let valConTech = v0;
+                dataConTech.push(valConTech);
+
+                // Modelo con Crecimiento Poblacional e Impacto Demográfico
+                let factor = 0.25 + (k2 / 2);
+                let valPop = v0 + R * t - factor * t * t;
+                dataPopGrowth.push(valPop > 0 ? valPop : 0);
+            }
+
+            // Calcular óptimos analíticos teóricos
+            let tOptimo = R / c;
+            let vOptimo = -0.5 * c * tOptimo * tOptimo + R * tOptimo + v0;
+
+            vMaxText.textContent = `${vOptimo.toFixed(2)} MMC`;
+            tMaxText.textContent = `Año ${tOptimo.toFixed(1)}`;
+
+            if (colapseT !== null) {
+                colapseYearText.textContent = `${colapseT.toFixed(1)} años`;
+                colapseYearText.className = "font-bold text-red-400 font-mono";
+            } else {
+                colapseYearText.textContent = "> 25 años";
+                colapseYearText.className = "font-bold text-emerald-400 font-mono";
+            }
+
+            // Estado de estabilidad actual
+            if (techActive) {
+                stabilityStatusText.textContent = "Estable";
+                stabilityStatusText.className = "text-xs font-bold text-emerald-400 font-mono";
+            } else {
+                stabilityStatusText.textContent = "Deficitario";
+                stabilityStatusText.className = "text-xs font-bold text-red-400 font-mono";
+            }
+
+            return { labels, dataSinTech, dataConTech, dataPopGrowth };
+        }
+
+        function updateChart() {
+            const chartData = buildData();
+
+            if (simulationChart) {
+                simulationChart.data.labels = chartData.labels;
+                simulationChart.data.datasets[0].data = chartData.dataSinTech;
+                simulationChart.data.datasets[1].data = chartData.dataConTech;
+                simulationChart.data.datasets[2].data = chartData.dataPopGrowth;
+                
+                // Mostrar/Ocultar curva según estado de la tecnología
+                simulationChart.data.datasets[1].hidden = !techActive;
+                
+                simulationChart.update();
+            } else {
+                simulationChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: 'Escenario Sin Tecnología (Colapso)',
+                                data: chartData.dataSinTech,
+                                borderColor: 'rgba(239, 68, 68, 0.9)',
+                                backgroundColor: 'rgba(239, 68, 68, 0.03)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.3
+                            },
+                            {
+                                label: 'Escenario Estabilizado con Captación',
+                                data: chartData.dataConTech,
+                                borderColor: 'rgba(6, 182, 212, 0.9)',
+                                backgroundColor: 'rgba(6, 182, 212, 0.03)',
+                                borderWidth: 3,
+                                fill: false,
+                                tension: 0.1,
+                                hidden: !techActive
+                            },
+                            {
+                                label: 'Impacto Poblacional Extra (Demográfico)',
+                                data: chartData.dataPopGrowth,
+                                borderColor: 'rgba(34, 197, 94, 0.9)',
+                                backgroundColor: 'transparent',
+                                borderDash: [5, 5],
+                                borderWidth: 2,
+                                fill: false,
+                                tension: 0.3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#a1a1aa',
+                                    font: { size: 10 }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                grid: { color: 'rgba(63, 63, 70, 0.2)' },
+                                ticks: { color: '#a1a1aa' },
+                                title: { display: true, text: 'Volumen (MMC)', color: '#a1a1aa' }
+                            },
+                            x: {
+                                grid: { color: 'rgba(63, 63, 70, 0.2)' },
+                                ticks: { color: '#a1a1aa' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- 4. SISTEMA DE LOGS TERMINAL ESP32 ---
+        function appendLog(message, type = "info") {
+            const timestamp = new Date().toLocaleTimeString();
+            let color = "text-emerald-400";
+            if (type === "warning") color = "text-amber-400";
+            if (type === "danger") color = "text-red-400";
+            if (type === "success") color = "text-cyan-400";
+
+            terminalLog.innerHTML += `<div class="${color}"><span class="text-zinc-600">[${timestamp}]</span> ${message}</div>`;
+            terminalLog.scrollTop = terminalLog.scrollHeight;
+        }
+
+        // --- 5. SIMULACIÓN HARDWARE INTERACTIVA ---
+        function calculateCondensation() {
+            let humidityFactor = Math.max(0, (humidity - 40) / 60); 
+            let tempFactor = 1.0;
+            if (temperature > 35) tempFactor = 0.7; 
+            if (temperature < 15) tempFactor = 0.8; 
+
+            let rate = (0.8 * humidityFactor * tempFactor); 
+            if (rate < 0) rate = 0;
+
+            condensationRateText.textContent = `${rate.toFixed(2)} L/min`;
+            return rate;
+        }
+
+        setInterval(() => {
+            const condRate = calculateCondensation();
+            let addedWater = (condRate * 0.85); 
+            tankLevel += (addedWater / 100) * 100; 
+            if (tankLevel > 100) tankLevel = 100;
+
+            // Lógica de histéresis
+            if (tankLevel >= 70 && !pumpActive) {
+                pumpActive = true;
+                appendLog("BOMBA ACTIVADA (Nivel > 70%). Iniciando inyección hídrica artificial al acuífero.", "success");
+            }
+
+            if (pumpActive) {
+                let injectionQuantity = 2.5; 
+                tankLevel -= (injectionQuantity / 100) * 100;
+                totalRecharged += injectionQuantity;
+
+                if (tankLevel <= 15) {
+                    pumpActive = false;
+                    appendLog("BOMBA APAGADA (Nivel < 15%). Evitando cavitación y succión de aire.", "warning");
+                }
+            }
+
+            if (tankLevel < 0) tankLevel = 0;
+
+            // UI
+            tankLiquid.style.height = `${tankLevel.toFixed(1)}%`;
+            tankLevelPctText.textContent = `${tankLevel.toFixed(0)}%`;
+            tankVolumeText.textContent = `${(tankLevel).toFixed(1)} Litros`;
+            rechargedVolText.textContent = `${totalRecharged.toFixed(1)} Litros`;
+
+            if (pumpActive) {
+                pumpIcon.className = "fa-solid fa-rotate text-emerald-400 animate-spin";
+                pumpIconContainer.className = "w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-lg glow-verde";
+                pumpStatusBadge.textContent = "INJECTING";
+                pumpStatusBadge.className = "text-[9px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold";
+            } else {
+                pumpIcon.className = "fa-solid fa-rotate text-zinc-600";
+                pumpIconContainer.className = "w-14 h-14 rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center text-lg";
+                pumpStatusBadge.textContent = "STANDBY";
+                pumpStatusBadge.className = "text-[9px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-500 border border-zinc-800";
+            }
+
+            if (Math.random() > 0.6) {
+                appendLog(`DHT22: Temp=${temperature}°C, Hum=${humidity}%. HC-SR04: Nivel=${tankLevel.toFixed(1)}%. Bomba=${pumpActive ? "ON" : "OFF"}`);
+            }
+
+        }, 1500);
+
+        // --- 6. EVENT LISTENERS ---
+        v0Slider.addEventListener('input', (e) => {
+            v0 = parseFloat(e.target.value);
+            v0Val.textContent = `${v0} MMC`;
+            updateChart();
+        });
+
+        rSlider.addEventListener('input', (e) => {
+            R = parseFloat(e.target.value);
+            rVal.textContent = `${R.toFixed(1)} MMC/año`;
+            updateChart();
+        });
+
+        cSlider.addEventListener('input', (e) => {
+            c = parseFloat(e.target.value);
+            cVal.textContent = c.toFixed(2);
+            updateChart();
+        });
+
+        k2Slider.addEventListener('input', (e) => {
+            k2 = parseFloat(e.target.value);
+            k2Val.textContent = k2.toFixed(2);
+            updateChart();
+        });
+
+        techToggle.addEventListener('change', (e) => {
+            techActive = e.target.checked;
+            updateChart();
+            appendLog(`Tecnología de captación e inyección hídrica manual ${techActive ? 'ACTIVADA' : 'DESACTIVADA'}`, techActive ? "success" : "danger");
+        });
+
+        humDHTSlider.addEventListener('input', (e) => {
+            humidity = parseInt(e.target.value);
+            humDHTVal.textContent = `${humidity} %`;
+            calculateCondensation();
+        });
+
+        tempDHTSlider.addEventListener('input', (e) => {
+            temperature = parseInt(e.target.value);
+            tempDHTVal.textContent = `${temperature} °C`;
+            calculateCondensation();
+        });
+
+        btnAutoInject.addEventListener('click', () => {
+            tankLevel += 25; 
+            if (tankLevel > 100) tankLevel = 100;
+            appendLog("Comando manual recibido: Inyección de contingencia de agua de captación.", "success");
+        });
+
+        btnClearLogs.addEventListener('click', () => {
+            terminalLog.innerHTML = "";
+            appendLog("Logs del monitor serial limpiados por el operador.");
+        });
+
+        window.onload = function() {
+            // Renderizar expresiones matemáticas de KaTeX de forma segura una vez cargado el DOM
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false},
+                        {left: '\\(', right: '\\)', display: false},
+                        {left: '\\[', right: '\\]', display: true}
+                    ],
+                    throwOnError : false
+                });
+            }
+            appendLog("Iniciando microcontrolador ESP32 v2.5...");
+            appendLog("DHT22 Inicializado correctamente.");
+            appendLog("HC-SR04 calibrado. Umbral superior: 70%, Umbral de succión: 15%.");
+            appendLog("Conectando a red WiFi local para telemetría Dashboard...");
+            appendLog("Broker MQTT conectado: publicando en /acuifero/telemetria", "success");
+            updateChart();
+        };
+    </script>
+</body>
+</html>
