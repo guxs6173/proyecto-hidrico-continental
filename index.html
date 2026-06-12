@@ -20,17 +20,30 @@
             theme: {
                 extend: {
                     colors: {
+                        // Verde esmeralda para estados positivos y naturaleza
                         verde: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            400: '#4ade80',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            900: '#14532d',
-                            950: '#022c11',
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            900: '#064e3b',
+                            950: '#022c22',
                         },
-                        celeste: {
+                        // Azul agua profunda para elementos interactivos primarios
+                        agua: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        // Océano (teal) para acentos secundarios
+                        oceano: {
                             50: '#ecfeff',
                             100: '#cffafe',
                             400: '#22d3ee',
@@ -52,12 +65,12 @@
             100% { background-position: 0% 50%; }
         }
         .animated-bg {
-            background: linear-gradient(-45deg, #09090b, #022c11, #083344, #09090b);
+            background: linear-gradient(-45deg, #09090b, #082f49, #0c4a6e, #09090b);
             background-size: 400% 400%;
             animation: gradientBG 20s ease infinite;
         }
-        .glow-verde { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); }
-        .glow-celeste { box-shadow: 0 0 15px rgba(6, 182, 212, 0.25); }
+        .glow-verde { box-shadow: 0 0 15px rgba(16, 185, 129, 0.25); }
+        .glow-agua { box-shadow: 0 0 15px rgba(14, 165, 233, 0.25); }
         .glass-panel {
             background: rgba(18, 18, 24, 0.65);
             backdrop-filter: blur(16px);
@@ -90,7 +103,7 @@
             width: 48px;
             height: 48px;
             border-radius: 0 50% 50% 50%;
-            background: linear-gradient(135deg, #22c55e, #06b6d4);
+            background: linear-gradient(135deg, #10b981, #0ea5e9);
             transform: rotate(45deg);
             animation: dropletPulse 1.5s ease-in-out infinite;
         }
@@ -109,7 +122,7 @@
         .loader-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #22c55e, #06b6d4);
+            background: linear-gradient(90deg, #10b981, #0ea5e9);
             border-radius: 4px;
             animation: loaderFill 2s ease-in-out forwards;
         }
@@ -125,8 +138,8 @@
             top: 0;
             left: 0;
             height: 3px;
-            background: linear-gradient(90deg, #22c55e, #06b6d4);
-            z-index: 9998;
+    background: linear-gradient(90deg, #10b981, #0ea5e9);
+    z-index: 9998;
             width: 0%;
             transition: width 0.1s linear;
         }
@@ -151,9 +164,9 @@
             width: 44px;
             height: 44px;
             border-radius: 14px;
-            background: rgba(6, 182, 212, 0.15);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            color: #22d3ee;
+            background: rgba(14, 165, 233, 0.12);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            color: #38bdf8;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -170,8 +183,8 @@
             transform: translateY(0) scale(1);
         }
         #backToTop:hover {
-            background: rgba(6, 182, 212, 0.3);
-            box-shadow: 0 0 24px rgba(6, 182, 212, 0.2);
+            background: rgba(14, 165, 233, 0.25);
+            box-shadow: 0 0 24px rgba(14, 165, 233, 0.15);
         }
 
         /* MOBILE MENU */
@@ -212,7 +225,7 @@
             left: 28px;
             right: 28px;
             height: 2px;
-            background: linear-gradient(90deg, #22c55e, #06b6d4);
+            background: linear-gradient(90deg, #10b981, #0ea5e9);
             transform: scaleX(0);
             transition: transform 0.3s;
         }
@@ -283,7 +296,7 @@
 
         /* TANK GLOW */
         .tank-glow {
-            box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.1);
+            box-shadow: inset 0 0 20px rgba(14, 165, 233, 0.1);
         }
 
         /* GRADIENT BORDER CARDS */
@@ -296,7 +309,7 @@
             inset: 0;
             border-radius: inherit;
             padding: 1px;
-            background: linear-gradient(135deg, rgba(34,197,94,0.3), rgba(6,182,212,0.3), transparent, transparent);
+            background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(14,165,233,0.25), transparent, transparent);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -320,7 +333,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, #22c55e, #06b6d4, transparent);
+            background: linear-gradient(to bottom, #10b981, #0ea5e9, transparent);
             transform: scaleY(0);
             transform-origin: top;
             transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -378,9 +391,9 @@
             width: 44px;
             height: 44px;
             border-radius: 14px;
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #4ade80;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -398,9 +411,9 @@
             transform: translateY(0) scale(1);
         }
         #floatDownload:hover {
-            background: rgba(34, 197, 94, 0.3);
-            box-shadow: 0 0 24px rgba(34, 197, 94, 0.2);
-            color: #22c55e;
+            background: rgba(16, 185, 129, 0.25);
+            box-shadow: 0 0 24px rgba(16, 185, 129, 0.15);
+            color: #10b981;
         }
 
         /* FORM STYLES */
@@ -408,7 +421,7 @@
             transition: all 0.2s;
         }
         .form-input:focus {
-            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2), 0 0 20px rgba(6, 182, 212, 0.05);
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2), 0 0 20px rgba(14, 165, 233, 0.05);
         }
 
         @media (max-width: 480px) {
@@ -416,7 +429,7 @@
         }
     </style>
 </head>
-<body class="animated-bg text-zinc-100 font-sans min-h-screen selection:bg-celeste-500 selection:text-zinc-950 relative">
+<body class="animated-bg text-zinc-100 font-sans min-h-screen selection:bg-agua-500/30 selection:text-white relative">
 
     <!-- LOADING SCREEN -->
     <div id="loader">
@@ -448,7 +461,7 @@
         <a href="#hardware" data-nav>Hardware IoT</a>
         <a href="#faq" data-nav>FAQ</a>
         <a href="#contacto" data-nav>Contacto</a>
-                        <span class="mt-4 text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-4 py-1.5 rounded-full font-mono">Continental - 2026</span>
+                        <span class="mt-4 text-xs bg-gradient-to-r from-verde-500/20 to-agua-500/20 text-agua-300 border border-agua-500/30 px-4 py-1.5 rounded-full font-mono">Continental - 2026</span>
     </div>
 
     <!-- Canvas para el fondo interactivo (Partículas de agua) -->
@@ -458,13 +471,13 @@
     <header class="border-b border-zinc-800/50 bg-zinc-950/70 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-verde-600 to-celeste-500 p-0.5 glow-celeste">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-verde-600 to-agua-500 p-0.5 glow-celeste">
                     <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
-                        <i class="fa-solid fa-droplet text-transparent bg-gradient-to-r from-verde-400 to-celeste-400 bg-clip-text text-xl"></i>
+                        <i class="fa-solid fa-droplet text-transparent bg-gradient-to-r from-verde-400 to-agua-400 bg-clip-text text-xl"></i>
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-sm sm:text-base font-extrabold tracking-tight bg-gradient-to-r from-verde-400 to-celeste-400 bg-clip-text text-transparent">
+                    <h1 class="text-sm sm:text-base font-extrabold tracking-tight bg-gradient-to-r from-verde-400 to-agua-400 bg-clip-text text-transparent">
                         UNIVERSIDAD CONTINENTAL
                     </h1>
                     <p class="text-[10px] sm:text-xs text-zinc-400 font-medium">Facultad de Ingeniería • Proyecto Hidrológico</p>
@@ -473,24 +486,24 @@
 
             <!-- Desktop Nav -->
             <nav class="hidden lg:flex items-center space-x-8">
-                <a href="#introduccion" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                <a href="#introduccion" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
                     Contexto
                     <span class="nav-dot"></span>
                 </a>
-                <a href="#modelo-matematico" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                <a href="#modelo-matematico" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
                     Desarrollo Matemático
                     <span class="nav-dot"></span>
                 </a>
-                <a href="#simulador" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                <a href="#simulador" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
                     Simulador
                     <span class="nav-dot"></span>
                 </a>
-                <a href="#hardware" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-celeste-400 transition" data-nav>
+                <a href="#hardware" class="nav-link relative text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-agua-400 transition" data-nav>
                     Hardware IoT
                     <span class="nav-dot"></span>
                 </a>
                 <span class="h-4 w-px bg-zinc-700"></span>
-                <span class="text-xs bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full font-mono whitespace-nowrap">
+                <span class="text-xs bg-gradient-to-r from-verde-500/20 to-agua-500/20 text-agua-300 border border-agua-500/30 px-3 py-1 rounded-full font-mono whitespace-nowrap">
                     Continental - 2026
                 </span>
             </nav>
@@ -511,7 +524,7 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative space-y-8">
-            <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-verde-500/20 to-celeste-500/20 text-celeste-300 border border-celeste-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm reveal">
+            <div class="inline-flex items-center space-x-2 bg-gradient-to-r from-verde-500/20 to-agua-500/20 text-agua-300 border border-agua-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-sm reveal">
                 <i class="fa-solid fa-graduation-cap"></i>
                 <span>Universidad Continental • Escuela Académico Profesional de Ingeniería</span>
             </div>
@@ -527,7 +540,7 @@
 
             <!-- Botones de acción -->
             <div class="flex flex-wrap gap-3 reveal">
-                <a href="#simulador" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-verde-600 to-celeste-600 hover:from-verde-500 hover:to-celeste-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all duration-200 shadow-lg shadow-celeste-500/20">
+                <a href="#simulador" class="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-verde-600 to-agua-600 hover:from-verde-500 hover:to-agua-500 text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all duration-200 shadow-lg shadow-agua-500/15">
                     <i class="fa-solid fa-play"></i>
                     <span>Explorar Simulador</span>
                 </a>
@@ -539,8 +552,8 @@
 
             <!-- Integrantes & Roles -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 reveal">
-                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-celeste-500/30 hover:bg-celeste-500/[0.02] transition-all duration-300">
-                    <div class="w-11 h-11 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform flex-shrink-0">JS</div>
+                <div class="glass-panel rounded-2xl p-4 flex items-center space-x-4 group hover:border-agua-500/30 hover:bg-agua-500/[0.02] transition-all duration-300">
+                    <div class="w-11 h-11 rounded-xl bg-agua-500/20 border border-agua-500/30 text-agua-400 flex items-center justify-center font-bold text-sm group-hover:scale-110 transition-transform flex-shrink-0">JS</div>
                     <div>
                         <h4 class="text-sm font-bold text-white">Juan Gustavo Segura Villegas</h4>
                         <p class="text-xs text-zinc-400">Firmware ESP32 & IoT Integración</p>
@@ -561,9 +574,9 @@
                         <p class="text-xs font-bold text-white">Cálculo Diferencial aplicado a Ingeniería</p>
                         <p class="text-[10px] text-zinc-400">Sede Central • Sometido para Evaluación</p>
                     </div>
-                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-verde-600 to-celeste-500 p-0.5 glow-celeste">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-verde-600 to-agua-500 p-0.5 glow-celeste">
                         <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
-                            <i class="fa-solid fa-file-lines text-xs text-celeste-400"></i>
+                            <i class="fa-solid fa-file-lines text-xs text-agua-400"></i>
                         </div>
                     </div>
                 </div>
@@ -576,7 +589,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 reveal">
                 <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
-                    <div class="text-2xl sm:text-3xl font-black text-celeste-400 stat-number" data-count="18.84">0</div>
+                    <div class="text-2xl sm:text-3xl font-black text-agua-400 stat-number" data-count="18.84">0</div>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Años hasta colapso (sin tech)</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
@@ -584,7 +597,7 @@
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Vol. máximo natural (MMC)</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
-                    <div class="text-2xl sm:text-3xl font-black text-celeste-400 stat-number" data-count="100">0</div>
+                    <div class="text-2xl sm:text-3xl font-black text-agua-400 stat-number" data-count="100">0</div>
                     <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-wider mt-1">Eficiencia de captación (%)</p>
                 </div>
                 <div class="glass-panel rounded-2xl p-5 text-center card-gradient-border hover:border-transparent transition-all duration-300">
@@ -602,7 +615,7 @@
         <section id="introduccion" class="space-y-8 reveal">
             <div class="space-y-4 max-w-4xl">
                 <h3 class="text-2xl font-bold text-white flex items-center space-x-3">
-                    <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold">1</span>
+                    <span class="w-8 h-8 rounded-lg bg-agua-500/20 border border-agua-500/30 text-agua-400 flex items-center justify-center text-sm font-bold">1</span>
                     <span>Introducción y Planteamiento del Problema</span>
                 </h3>
                 <p class="text-zinc-300 text-sm sm:text-base leading-relaxed text-justify">
@@ -694,7 +707,7 @@
                     </p>
                 </div>
 
-                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4 hover:border-celeste-500/20 transition-colors">
+                <div class="bg-zinc-950/60 rounded-2xl p-6 border border-zinc-800/80 space-y-4 hover:border-agua-500/20 transition-colors">
                     <h4 class="text-sm font-bold text-zinc-100 uppercase tracking-wider border-b border-zinc-800 pb-2">
                         B. Búsqueda de Punto de Inflexión y Optimización
                     </h4>
@@ -713,7 +726,7 @@
             </div>
 
             <div class="p-4 rounded-2xl border border-zinc-800 bg-zinc-950/80 mt-4 shadow-inner">
-                <p class="text-xs font-bold text-celeste-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-compass-drafting mr-2"></i>Figura 1: Esquema Vectorial de Modelación Matemática</p>
+                <p class="text-xs font-bold text-agua-400 mb-2 uppercase tracking-widest"><i class="fa-solid fa-compass-drafting mr-2"></i>Figura 1: Esquema Vectorial de Modelación Matemática</p>
 
                 <svg viewBox="0 0 800 220" class="w-full h-auto bg-zinc-900/30 rounded-xl p-2 border border-zinc-800/50">
                     <line x1="100" y1="20" x2="100" y2="200" stroke="#3f3f46" stroke-dasharray="4,4" />
@@ -759,7 +772,7 @@
             <div class="glass-panel rounded-3xl p-6 space-y-6 flex flex-col justify-between">
                 <div>
                     <h4 class="text-lg font-bold text-white mb-1 flex items-center space-x-2">
-                        <i class="fa-solid fa-sliders text-celeste-400"></i>
+                        <i class="fa-solid fa-sliders text-agua-400"></i>
                         <span>Simulación y Variables</span>
                     </h4>
                     <p class="text-xs text-zinc-400">Modifica los parámetros hidrológicos del modelo para recalcular la curva dinámicamente.</p>
@@ -769,33 +782,33 @@
                     <div class="space-y-1">
                         <div class="flex justify-between text-xs">
                             <span class="text-zinc-300">Volumen Inicial \(V_0\)</span>
-                            <span id="v0Val" class="font-bold text-celeste-400 font-mono">50 MMC</span>
+                            <span id="v0Val" class="font-bold text-agua-400 font-mono">50 MMC</span>
                         </div>
-                        <input type="range" id="v0Slider" min="20" max="100" value="50" step="5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
+                        <input type="range" id="v0Slider" min="20" max="100" value="50" step="5" class="w-full accent-agua-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-agua-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-agua-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="space-y-1">
                         <div class="flex justify-between text-xs">
                             <span class="text-zinc-300">Recarga Natural \(R\)</span>
-                            <span id="rVal" class="font-bold text-celeste-400 font-mono">3.0 MMC/año</span>
+                            <span id="rVal" class="font-bold text-agua-400 font-mono">3.0 MMC/año</span>
                         </div>
-                        <input type="range" id="rSlider" min="0" max="10" value="3" step="0.5" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
+                        <input type="range" id="rSlider" min="0" max="10" value="3" step="0.5" class="w-full accent-agua-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-agua-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-agua-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="space-y-1">
                         <div class="flex justify-between text-xs">
                             <span class="text-zinc-300">Factor de Consumo \(c\)</span>
-                            <span id="cVal" class="font-bold text-celeste-400 font-mono">0.60</span>
+                            <span id="cVal" class="font-bold text-agua-400 font-mono">0.60</span>
                         </div>
-                        <input type="range" id="cSlider" min="0.1" max="1.5" value="0.6" step="0.05" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
+                        <input type="range" id="cSlider" min="0.1" max="1.5" value="0.6" step="0.05" class="w-full accent-agua-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-agua-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-agua-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="space-y-1">
                         <div class="flex justify-between text-xs">
                             <span class="text-zinc-300">Crecimiento Demográfico (\(k_2\))</span>
-                            <span id="k2Val" class="font-bold text-celeste-400 font-mono">0.05</span>
+                            <span id="k2Val" class="font-bold text-agua-400 font-mono">0.05</span>
                         </div>
-                        <input type="range" id="k2Slider" min="0" max="0.3" value="0.05" step="0.01" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
+                        <input type="range" id="k2Slider" min="0" max="0.3" value="0.05" step="0.01" class="w-full accent-agua-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-agua-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-agua-500/30 [&::-webkit-slider-thumb]:cursor-pointer">
                     </div>
 
                     <div class="p-3.5 rounded-2xl bg-zinc-900 border border-zinc-800/80 flex items-center justify-between">
@@ -830,9 +843,9 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-3 sm:gap-4 text-center">
-                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 hover:border-celeste-500/30 transition-colors">
+                    <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 hover:border-agua-500/30 transition-colors">
                         <p class="text-[9px] text-zinc-400">Máximo Natural</p>
-                        <p id="vMaxText" class="text-xs font-bold text-celeste-400 font-mono">57.50 MMC</p>
+                        <p id="vMaxText" class="text-xs font-bold text-agua-400 font-mono">57.50 MMC</p>
                     </div>
                     <div class="p-2.5 bg-zinc-900/60 rounded-xl border border-zinc-800 hover:border-verde-500/30 transition-colors">
                         <p class="text-[9px] text-zinc-400">Año Pico</p>
@@ -856,13 +869,13 @@
 
             <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 pt-2">
                 <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
-                    <div class="w-12 h-12 rounded-xl bg-celeste-500/10 border border-celeste-500/20 flex items-center justify-center text-2xl text-celeste-400 group-hover:bg-celeste-500/20 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-agua-500/10 border border-agua-500/20 flex items-center justify-center text-2xl text-agua-400 group-hover:bg-agua-500/20 transition-all">
                         <i class="fa-brands fa-js"></i>
                     </div>
                     <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">JavaScript</span>
                 </div>
                 <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
-                    <div class="w-12 h-12 rounded-xl bg-celeste-500/10 border border-celeste-500/20 flex items-center justify-center text-2xl text-celeste-400 group-hover:bg-celeste-500/20 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-agua-500/10 border border-agua-500/20 flex items-center justify-center text-2xl text-agua-400 group-hover:bg-agua-500/20 transition-all">
                         <i class="fa-brands fa-python"></i>
                     </div>
                     <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Python</span>
@@ -880,7 +893,7 @@
                     <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">ESP32</span>
                 </div>
                 <div class="flex flex-col items-center space-y-2 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 tech-icon cursor-default group">
-                    <div class="w-12 h-12 rounded-xl bg-celeste-500/10 border border-celeste-500/20 flex items-center justify-center text-2xl text-celeste-400 group-hover:bg-celeste-500/20 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-agua-500/10 border border-agua-500/20 flex items-center justify-center text-2xl text-agua-400 group-hover:bg-agua-500/20 transition-all">
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
                     <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">Chart.js</span>
@@ -897,7 +910,7 @@
         <!-- METODOLOGÍA TIMELINE -->
         <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <div class="flex items-center space-x-3 mb-2">
-                <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-timeline"></i></span>
+                <span class="w-8 h-8 rounded-lg bg-agua-500/20 border border-agua-500/30 text-agua-400 flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-timeline"></i></span>
                 <h3 class="text-xl font-bold text-white">Metodología del Proyecto</h3>
             </div>
             <p class="text-xs text-zinc-400">Fases de desarrollo del sistema hídrico atmosférico-subterráneo.</p>
@@ -906,7 +919,7 @@
                 <div class="timeline-line" id="timelineLine"></div>
 
                 <div class="relative timeline-item">
-                    <div class="timeline-dot bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 absolute -left-12">1</div>
+                    <div class="timeline-dot bg-agua-500/20 border border-agua-500/30 text-agua-400 absolute -left-12">1</div>
                     <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/60 ml-4">
                         <h4 class="text-sm font-bold text-white">Investigación y Modelado Matemático</h4>
                         <p class="text-xs text-zinc-400 mt-1">Formulación de la EDO de balance hídrico y optimización mediante cálculo diferencial para determinar el punto de colapso del acuífero.</p>
@@ -922,7 +935,7 @@
                 </div>
 
                 <div class="relative timeline-item">
-                    <div class="timeline-dot bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 absolute -left-12">3</div>
+                    <div class="timeline-dot bg-agua-500/20 border border-agua-500/30 text-agua-400 absolute -left-12">3</div>
                     <div class="bg-zinc-900/40 rounded-2xl p-4 border border-zinc-800/60 ml-4">
                         <h4 class="text-sm font-bold text-white">Instrumentación IoT con ESP32</h4>
                         <p class="text-xs text-zinc-400 mt-1">Implementación de sensores DHT22 y HC-SR04, lógica de histéresis para control de bomba de inyección y comunicación MQTT.</p>
@@ -943,7 +956,7 @@
         <section id="hardware" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 reveal">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-xl bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-xl font-bold">3</div>
+                    <div class="w-12 h-12 rounded-xl bg-agua-500/20 border border-agua-500/30 text-agua-400 flex items-center justify-center text-xl font-bold">3</div>
                     <div>
                         <h3 class="text-xl font-extrabold text-white">Planta IoT de Inyección Automatizada</h3>
                         <p class="text-xs text-zinc-400 mt-1">Simulación física y código firmware C++ del Microcontrolador ESP32.</p>
@@ -960,7 +973,7 @@
                 <div class="absolute inset-0 bg-gradient-to-r from-zinc-950/60 to-transparent"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-zinc-950/60 to-transparent"></div>
                 <div class="absolute bottom-4 left-4">
-                    <span class="bg-zinc-950/80 text-celeste-300 border border-celeste-500/30 px-3 py-1.5 rounded text-xs font-mono font-bold backdrop-blur-sm inline-flex items-center space-x-1.5">
+                    <span class="bg-zinc-950/80 text-agua-300 border border-agua-500/30 px-3 py-1.5 rounded text-xs font-mono font-bold backdrop-blur-sm inline-flex items-center space-x-1.5">
                         <i class="fa-solid fa-microchip"></i>
                         <span>Microcontrolador ESP32-WROOM-32</span>
                     </span>
@@ -974,10 +987,10 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 space-y-6 hover:border-celeste-500/20 transition-colors">
+                <div class="p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/80 space-y-6 hover:border-agua-500/20 transition-colors">
                     <div>
                         <h4 class="text-sm font-bold text-white flex items-center space-x-2">
-                            <i class="fa-solid fa-cloud-rain text-celeste-400"></i>
+                            <i class="fa-solid fa-cloud-rain text-agua-400"></i>
                             <span>Simulador de Entorno (DHT22)</span>
                         </h4>
                     </div>
@@ -986,9 +999,9 @@
                         <div class="space-y-2">
                             <div class="flex justify-between text-xs">
                                 <span class="text-zinc-300">Humedad Relativa (%)</span>
-                                <span id="humDHTVal" class="font-bold text-celeste-400 font-mono">75%</span>
+                                <span id="humDHTVal" class="font-bold text-agua-400 font-mono">75%</span>
                             </div>
-                            <input type="range" id="humDHTSlider" min="30" max="100" value="75" step="1" class="w-full accent-celeste-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-celeste-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-celeste-500/30">
+                            <input type="range" id="humDHTSlider" min="30" max="100" value="75" step="1" class="w-full accent-agua-500 bg-zinc-800 h-1.5 rounded-lg cursor-pointer appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-agua-500 [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:shadow-agua-500/30">
                         </div>
 
                         <div class="space-y-2">
@@ -1003,10 +1016,10 @@
                     <div class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/60 space-y-2.5 text-xs">
                         <div class="flex justify-between items-center">
                             <span class="text-zinc-400">Generación Condensador:</span>
-                            <span id="condensationRate" class="font-bold text-celeste-400 font-mono text-sm">0.45 L/min</span>
+                            <span id="condensationRate" class="font-bold text-agua-400 font-mono text-sm">0.45 L/min</span>
                         </div>
                         <div class="w-full bg-zinc-800 rounded-full h-1.5">
-                            <div id="condBar" class="bg-gradient-to-r from-celeste-600 to-celeste-400 h-1.5 rounded-full transition-all duration-300" style="width: 45%"></div>
+                            <div id="condBar" class="bg-gradient-to-r from-agua-600 to-agua-400 h-1.5 rounded-full transition-all duration-300" style="width: 45%"></div>
                         </div>
                     </div>
                 </div>
@@ -1023,7 +1036,7 @@
                         <div class="flex flex-col items-center space-y-2">
                             <span class="text-[9px] text-zinc-500 uppercase font-bold text-center">Nivel del Tanque</span>
                             <div class="w-16 h-28 border border-zinc-800 rounded-lg relative overflow-hidden bg-zinc-900 flex flex-col justify-end tank-glow">
-                                <div id="tankLiquid" class="bg-gradient-to-t from-celeste-600/80 to-celeste-400/60 w-full transition-all duration-500 ease-out" style="height: 45%;"></div>
+                                <div id="tankLiquid" class="bg-gradient-to-t from-agua-600/80 to-agua-400/60 w-full transition-all duration-500 ease-out" style="height: 45%;"></div>
                                 <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white font-mono" id="tankLevelPctText">45%</div>
                             </div>
                         </div>
@@ -1061,7 +1074,7 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button id="btnAutoInject" class="flex-grow py-2 px-3 rounded-lg bg-gradient-to-r from-celeste-600 to-celeste-500 hover:from-celeste-500 hover:to-celeste-400 text-zinc-950 font-bold text-xs transition-all duration-200 active:scale-95">
+                        <button id="btnAutoInject" class="flex-grow py-2 px-3 rounded-lg bg-gradient-to-r from-agua-600 to-agua-500 hover:from-agua-500 hover:to-agua-400 text-zinc-950 font-bold text-xs transition-all duration-200 active:scale-95">
                             <i class="fa-solid fa-syringe mr-1.5"></i>Forzar Inyección
                         </button>
                         <button id="btnClearLogs" class="py-2 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 transition hover:text-zinc-200">
@@ -1119,7 +1132,7 @@ void loop() {
         <!-- DIAGRAMA TÉCNICO DE ESTRATIGRAFÍA GEOLÓGICA DE RECARGA -->
         <section class="glass-panel rounded-3xl p-6 sm:p-8 space-y-8 relative overflow-hidden reveal">
             <h3 class="text-xl font-bold text-white mb-6 flex items-center space-x-3">
-                <span class="w-8 h-8 rounded-lg bg-celeste-500/20 border border-celeste-500/30 text-celeste-400 flex items-center justify-center text-sm font-bold">4</span>
+                <span class="w-8 h-8 rounded-lg bg-agua-500/20 border border-agua-500/30 text-agua-400 flex items-center justify-center text-sm font-bold">4</span>
                 <span>Diagrama Físico de Estratigrafía de Recarga del Acuífero</span>
             </h3>
 
@@ -1142,8 +1155,8 @@ void loop() {
                             <span><strong class="text-emerald-400">Filtro de Intercambio de Arcillas/Zeolitas (E3):</strong> Absorción iónica elemental de impurezas procedentes de metales.</span>
                         </li>
                         <li class="flex items-start space-x-2">
-                            <span class="w-2 h-2 bg-celeste-500 rounded-full mt-1 flex-shrink-0"></span>
-                            <span><strong class="text-celeste-400">Capa de Saturación Subterránea (Acuífero):</strong> Almacenamiento hídrico neto monitorizado por ultrasonido.</span>
+                            <span class="w-2 h-2 bg-agua-500 rounded-full mt-1 flex-shrink-0"></span>
+                            <span><strong class="text-agua-400">Capa de Saturación Subterránea (Acuífero):</strong> Almacenamiento hídrico neto monitorizado por ultrasonido.</span>
                         </li>
                     </ul>
                 </div>
@@ -1187,7 +1200,7 @@ void loop() {
         <!-- PREGUNTAS FRECUENTES (FAQ) -->
         <section id="faq" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <h3 class="text-xl font-bold text-white flex items-center space-x-2">
-                <i class="fa-solid fa-circle-question text-celeste-500"></i>
+                <i class="fa-solid fa-circle-question text-agua-500"></i>
                 <span>Preguntas Frecuentes (FAQ)</span>
             </h3>
 
@@ -1199,7 +1212,7 @@ void loop() {
                     </p>
                 </div>
 
-                <div class="space-y-2 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-celeste-500/20 transition-colors">
+                <div class="space-y-2 p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/50 hover:border-agua-500/20 transition-colors">
                     <h4 class="text-sm font-bold text-verde-400">¿Cuánto tiempo toma estabilizar las capas freáticas?</h4>
                     <p class="text-xs text-zinc-400 text-justify">
                         Analíticamente, la estabilización es inmediata tras activar la retroalimentación de inyección: el balance neto $\frac{dV}{dt}$ pasa a $0$. Físicamente, el proceso de infiltración toma entre 48 y 72 horas para alcanzar homogeneidad hidrostática en capas arenosas de porosidad media.
@@ -1212,7 +1225,7 @@ void loop() {
         <section id="contacto" class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6 reveal">
             <div class="max-w-2xl">
                 <h3 class="text-xl font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-envelope text-celeste-500"></i>
+                    <i class="fa-solid fa-envelope text-agua-500"></i>
                     <span>Contacto e Información Académica</span>
                 </h3>
                 <p class="text-xs text-zinc-400 mt-1">¿Tienes dudas sobre los algoritmos de optimización o el firmware de la estación? Ponte en contacto con el equipo investigador de la Universidad Continental.</p>
@@ -1223,18 +1236,18 @@ void loop() {
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <label class="text-[10px] uppercase font-bold text-zinc-400">Nombre</label>
-                            <input type="text" placeholder="Tu nombre" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-celeste-500 text-white placeholder-zinc-600 transition-all">
+                            <input type="text" placeholder="Tu nombre" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-agua-500 text-white placeholder-zinc-600 transition-all">
                         </div>
                         <div class="space-y-1">
                             <label class="text-[10px] uppercase font-bold text-zinc-400">Correo Institucional</label>
-                            <input type="email" placeholder="estudiante@continental.edu.pe" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-celeste-500 text-white placeholder-zinc-600 transition-all">
+                            <input type="email" placeholder="estudiante@continental.edu.pe" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-agua-500 text-white placeholder-zinc-600 transition-all">
                         </div>
                     </div>
                     <div class="space-y-1">
                         <label class="text-[10px] uppercase font-bold text-zinc-400">Mensaje</label>
-                        <textarea placeholder="Consulta técnica o sugerencias..." rows="3" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-celeste-500 text-white placeholder-zinc-600 transition-all resize-none"></textarea>
+                        <textarea placeholder="Consulta técnica o sugerencias..." rows="3" required class="form-input w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2.5 text-xs focus:outline-none focus:border-agua-500 text-white placeholder-zinc-600 transition-all resize-none"></textarea>
                     </div>
-                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-verde-600 to-celeste-600 hover:from-verde-500 hover:to-celeste-500 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition-all duration-200 active:scale-[0.98]">
+                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-verde-600 to-agua-600 hover:from-verde-500 hover:to-agua-500 text-white font-bold rounded-lg text-xs uppercase tracking-wider transition-all duration-200 active:scale-[0.98]">
                         Enviar Mensaje
                     </button>
                 </form>
@@ -1242,7 +1255,7 @@ void loop() {
                 <div class="space-y-4 flex flex-col justify-between text-xs text-zinc-400">
                     <div class="space-y-4">
                         <div class="flex items-center space-x-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/50">
-                            <div class="w-8 h-8 rounded-lg bg-celeste-500/10 flex items-center justify-center text-celeste-400">
+                            <div class="w-8 h-8 rounded-lg bg-agua-500/10 flex items-center justify-center text-agua-400">
                                 <i class="fa-solid fa-envelope"></i>
                             </div>
                             <span>soporte.hidro@continental.edu.pe</span>
@@ -1254,16 +1267,16 @@ void loop() {
                             <span>+51 987 654 321</span>
                         </div>
                         <div class="flex items-center space-x-3 p-3 rounded-xl bg-zinc-900/30 border border-zinc-800/50">
-                            <div class="w-8 h-8 rounded-lg bg-celeste-500/10 flex items-center justify-center text-celeste-400">
+                            <div class="w-8 h-8 rounded-lg bg-agua-500/10 flex items-center justify-center text-agua-400">
                                 <i class="fa-solid fa-location-dot"></i>
                             </div>
                             <span>Av. San Carlos 1980, Huancayo - Perú</span>
                         </div>
                     </div>
                     <div class="pt-4 border-t border-zinc-800/80 flex space-x-4 text-sm">
-                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-celeste-400 hover:border-celeste-500/30 hover:bg-celeste-500/5 transition-all"><i class="fa-brands fa-github"></i></a>
-                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-celeste-400 hover:border-celeste-500/30 hover:bg-celeste-500/5 transition-all"><i class="fa-brands fa-linkedin"></i></a>
-                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-celeste-400 hover:border-celeste-500/30 hover:bg-celeste-500/5 transition-all"><i class="fa-solid fa-graduation-cap"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-agua-400 hover:border-agua-500/30 hover:bg-agua-500/5 transition-all"><i class="fa-brands fa-github"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-agua-400 hover:border-agua-500/30 hover:bg-agua-500/5 transition-all"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-agua-400 hover:border-agua-500/30 hover:bg-agua-500/5 transition-all"><i class="fa-solid fa-graduation-cap"></i></a>
                     </div>
                 </div>
             </div>
@@ -1274,9 +1287,9 @@ void loop() {
     <footer class="bg-zinc-950 border-t border-zinc-900 py-10 mt-12 text-zinc-500 text-xs relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-verde-500 to-celeste-500 p-0.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-verde-500 to-agua-500 p-0.5">
                     <div class="w-full h-full bg-zinc-950 rounded-[10px] flex items-center justify-center">
-                        <i class="fa-solid fa-droplet text-celeste-400"></i>
+                        <i class="fa-solid fa-droplet text-agua-400"></i>
                     </div>
                 </div>
                 <div>
@@ -1391,7 +1404,7 @@ void loop() {
                 this.size = Math.random() * 2.5 + 0.5;
                 this.speedY = Math.random() * -0.5 - 0.1;
                 this.speedX = (Math.random() - 0.5) * 0.3;
-                this.color = Math.random() > 0.5 ? 'rgba(34, 197, 94, 0.4)' : 'rgba(6, 182, 212, 0.4)';
+                this.color = Math.random() > 0.5 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(14, 165, 233, 0.35)';
                 this.opacity = Math.random() * 0.5 + 0.2;
             }
             update() {
